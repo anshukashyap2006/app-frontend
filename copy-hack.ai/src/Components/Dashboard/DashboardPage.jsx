@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { VoiceProfileSetup } from "./components/VoiceProfileSetup";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { StatCard } from "./components/StatCard";
@@ -9,7 +9,13 @@ import { RecentGenerationsList } from "./components/RecentGenerationsList";
 
 
 
-export function DashboardPage({ dashboardState }) {
+export function DashboardPage({ dashboardState, setBreadcrumbs }) {
+  useEffect(() => {
+    if (setBreadcrumbs) {
+      setBreadcrumbs(null);
+    }
+  }, [setBreadcrumbs]);
+
   const {
     loading,
     error,

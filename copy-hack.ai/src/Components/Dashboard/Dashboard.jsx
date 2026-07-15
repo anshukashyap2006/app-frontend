@@ -1,12 +1,18 @@
 import React, { useState, useCallback } from "react";
+import { Routes, Route } from "react-router-dom";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { DashboardPage } from "./DashboardPage";
+import { ProjectPage } from "./ProjectPage";
+import { GenerateEmailPage } from "./GenerateEmailPage";
+import { GenerateSocialPostPage } from "./GenerateSocialPostPage";
+import { PlanSequencePage } from "./PlanSequencePage";
 import { NewProjectModal } from "./components/NewProjectModal";
 import { useDashboard } from "./hooks/useDashboard";
 
 export default function Dashboard() {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+  const [breadcrumbs, setBreadcrumbs] = useState(null);
   const dashboard = useDashboard();
 
   const handleNewProject = useCallback(() => {
@@ -29,9 +35,15 @@ export default function Dashboard() {
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <TopBar />
+        <TopBar breadcrumbs={breadcrumbs} />
         <main className="flex-1 overflow-y-auto">
-          <DashboardPage dashboardState={dashboard} />
+          <Routes>
+            <Route index element={<DashboardPage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} />} />
+            <Route path="projects/:projectId" element={<ProjectPage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} />} />
+            <Route path="generate/email" element={<GenerateEmailPage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} />} />
+            <Route path="generate/social" element={<GenerateSocialPostPage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} />} />
+            <Route path="generate/sequence" element={<PlanSequencePage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} />} />
+          </Routes>
         </main>
       </div>
 

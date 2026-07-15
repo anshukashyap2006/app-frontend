@@ -1,13 +1,29 @@
 import React from "react";
 import { UserButton } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 
-export function TopBar() {
+export function TopBar({ breadcrumbs }) {
   return (
     <header className="h-[60px] min-h-[60px] flex items-center justify-between px-6 md:px-10 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-sm">
-      {/* Page title */}
-      <h2 className="text-white text-base font-semibold tracking-tight">
-        Dashboard
-      </h2>
+      {/* Page title / Breadcrumbs */}
+      <div className="flex items-center gap-2 text-base font-semibold tracking-tight">
+        {breadcrumbs ? (
+          breadcrumbs.map((crumb, idx) => (
+            <React.Fragment key={idx}>
+              {idx > 0 && <span className="text-zinc-600">/</span>}
+              {crumb.href ? (
+                <Link to={crumb.href} className="text-zinc-500 hover:text-zinc-300 transition-colors">
+                  {crumb.label}
+                </Link>
+              ) : (
+                <span className="text-white">{crumb.label}</span>
+              )}
+            </React.Fragment>
+          ))
+        ) : (
+          <h2 className="text-white">Dashboard</h2>
+        )}
+      </div>
 
       {/* Right side controls */}
       <div className="flex items-center gap-4">

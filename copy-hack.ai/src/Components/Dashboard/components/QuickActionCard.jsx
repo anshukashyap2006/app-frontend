@@ -22,6 +22,7 @@ export function QuickActionCard({
   description,
   primaryAction,
   secondaryAction,
+  footerText,
 }) {
   return (
     <div className="bg-zinc-900/80 border border-zinc-800/50 rounded-xl p-6 hover:border-zinc-700/50 hover:shadow-[0_0_30px_rgba(0,0,0,0.3)] transition-all duration-300 group">
@@ -59,6 +60,15 @@ export function QuickActionCard({
           </Link>
         )}
       </div>
+
+      {/* Footer Text */}
+      {footerText && (
+        <div className="mt-6 pt-4 border-t border-zinc-800/40 text-center">
+          <p className="text-[10px] font-mono tracking-widest text-zinc-600 uppercase">
+            {footerText}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
