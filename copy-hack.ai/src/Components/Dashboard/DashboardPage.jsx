@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { VoiceProfileSetup } from "./components/VoiceProfileSetup";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { StatCard } from "./components/StatCard";
@@ -9,7 +10,7 @@ import { RecentGenerationsList } from "./components/RecentGenerationsList";
 
 
 
-export function DashboardPage({ dashboardState, setBreadcrumbs }) {
+export function DashboardPage({ dashboardState, setBreadcrumbs, onNewProject }) {
   useEffect(() => {
     if (setBreadcrumbs) {
       setBreadcrumbs(null);
@@ -86,14 +87,14 @@ export function DashboardPage({ dashboardState, setBreadcrumbs }) {
           icon="email"
           title="Email Copy"
           description="Individual email or full sequence optimized for clicks and replies."
-          primaryAction={{ label: "Generate an Email", href: "/generate/email" }}
-          secondaryAction={{ label: "Plan a Sequence", href: "/generate/sequence" }}
+          primaryAction={{ label: "Generate an Email", onClick: onNewProject }}
+          secondaryAction={{ label: "Plan a Sequence", onClick: onNewProject }}
         />
         <QuickActionCard
           icon="social"
           title="Social Media Posts"
           description="Hooks, threads, and posts for Twitter, LinkedIn, and Instagram."
-          primaryAction={{ label: "Generate Posts", href: "/generate/social" }}
+          primaryAction={{ label: "Generate Posts", onClick: onNewProject }}
         />
       </div>
  
@@ -106,12 +107,12 @@ export function DashboardPage({ dashboardState, setBreadcrumbs }) {
             <p className="text-[11px] font-mono font-medium tracking-[0.15em] text-zinc-500 uppercase">
               Recent Projects
             </p>
-            <a
-              href="/projects"
+            <Link
+              to="/dashboard/projects"
               className="text-[11px] font-mono text-[#BFFF00] hover:text-white transition-colors duration-150"
             >
               View All →
-            </a>
+            </Link>
           </div>
           <RecentProjectsList
             projects={projects.slice(0, 3)}
@@ -125,12 +126,12 @@ export function DashboardPage({ dashboardState, setBreadcrumbs }) {
             <p className="text-[11px] font-mono font-medium tracking-[0.15em] text-zinc-500 uppercase">
               Recent Generations
             </p>
-            <a
-              href="/generations"
+            <Link
+              to="/dashboard/generations"
               className="text-[11px] font-mono text-[#BFFF00] hover:text-white transition-colors duration-150"
             >
               View All →
-            </a>
+            </Link>
           </div>
           <RecentGenerationsList
             generations={recentGenerations}

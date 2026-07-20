@@ -43,7 +43,14 @@ export function QuickActionCard({
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        {primaryAction && (
+        {primaryAction && primaryAction.onClick ? (
+          <button
+            onClick={primaryAction.onClick}
+            className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#BFFF00] text-zinc-900 text-sm font-semibold hover:bg-[#d4ff4d] active:bg-[#a8e600] transition-all duration-200 shadow-[0_0_20px_rgba(191,255,0,0.12)] hover:shadow-[0_0_25px_rgba(191,255,0,0.2)]"
+          >
+            {primaryAction.label}
+          </button>
+        ) : primaryAction && (
           <Link
             to={primaryAction.href}
             className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#BFFF00] text-zinc-900 text-sm font-semibold hover:bg-[#d4ff4d] active:bg-[#a8e600] transition-all duration-200 shadow-[0_0_20px_rgba(191,255,0,0.12)] hover:shadow-[0_0_25px_rgba(191,255,0,0.2)]"
@@ -51,7 +58,14 @@ export function QuickActionCard({
             {primaryAction.label}
           </Link>
         )}
-        {secondaryAction && (
+        {secondaryAction && secondaryAction.onClick ? (
+          <button
+            onClick={secondaryAction.onClick}
+            className="inline-flex items-center px-5 py-2.5 rounded-lg border border-zinc-700 text-zinc-300 text-sm font-medium hover:border-zinc-600 hover:text-white transition-all duration-200"
+          >
+            {secondaryAction.label}
+          </button>
+        ) : secondaryAction && (
           <Link
             to={secondaryAction.href}
             className="inline-flex items-center px-5 py-2.5 rounded-lg border border-zinc-700 text-zinc-300 text-sm font-medium hover:border-zinc-600 hover:text-white transition-all duration-200"

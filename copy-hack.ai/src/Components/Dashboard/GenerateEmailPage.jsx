@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import apiClient from "../../../Api/api";
+import apiClient from "../../Api/api";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { EmailResultView } from "./components/EmailResultView";
 
@@ -43,11 +43,11 @@ function CheckIcon({ className }) {
 export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [project, setProject] = useState(null);
-  
+
   // Form State
   const [emailType, setEmailType] = useState("launch");
   const [goal, setGoal] = useState("");
@@ -55,7 +55,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   const [framework, setFramework] = useState("none");
   const [length, setLength] = useState("medium");
   const [extra, setExtra] = useState("");
-  
+
   // Generation State
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationResult, setGenerationResult] = useState(null);
@@ -91,10 +91,10 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       alert("You need a voice profile to generate an email.");
       return;
     }
-    
+
     // Pick the default voice profile or the first one
     const defaultVoice = dashboardState.voiceProfiles.find(vp => vp.is_default) || dashboardState.voiceProfiles[0];
-    
+
     try {
       setIsGenerating(true);
       const payload = {
@@ -110,7 +110,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
 
       const res = await apiClient.post(`/api/v1/projects/${projectId}/generate/email`, payload);
       setGenerationResult(res.data);
-      
+
       // Update breadcrumbs for result view
       if (setBreadcrumbs) {
         setBreadcrumbs([
@@ -119,7 +119,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
           { label: "Result" }
         ]);
       }
-      
+
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.detail || "An error occurred during generation.");
@@ -149,11 +149,16 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (generationResult) {
+    const defaultVoice = dashboardState?.voiceProfiles?.find(vp => vp.is_default) || dashboardState?.voiceProfiles?.[0];
     return (
-      <EmailResultView 
-        result={generationResult.latest_version || generationResult} 
-        onBack={handleBackToForm} 
+      <EmailResultView
+        result={generationResult.latest_version || generationResult}
+        onBack={handleBackToForm}
         onRegenerate={handleRegenerate}
+        projectName={project?.name}
+        voiceProfileName={defaultVoice?.name}
+        brandBriefName={project?.brand_brief?.name}
+        emailType={emailType}
       />
     );
   }
@@ -209,8 +214,8 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
         <h2 className="text-lg font-bold text-white tracking-tight mb-4">What kind of email is this?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {EMAIL_TYPES.map((type) => (
-            <div 
-              key={type.id} 
+            <div
+              key={type.id}
               onClick={() => setEmailType(type.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 relative ${emailType === type.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -230,11 +235,11 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       <div className="mb-10">
         <h2 className="text-lg font-bold text-white tracking-tight mb-1">What's the goal of this email?</h2>
         <p className="text-sm text-zinc-500 mb-4">Be specific — vague goals produce vague copy.</p>
-        
+
         <p className="text-[10px] font-mono text-zinc-500 tracking-widest uppercase mb-3">Quick Fill →</p>
         <div className="space-y-3">
           {QUICK_FILL_GOALS.map((qf, idx) => (
-            <div 
+            <div
               key={idx}
               onClick={() => setGoal(qf)}
               className={`p-3.5 rounded-lg border cursor-pointer transition-colors text-sm ${goal === qf ? 'bg-[#BFFF00]/5 border-[#BFFF00] text-[#BFFF00]' : 'bg-zinc-900/40 border-zinc-800/60 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'}`}
@@ -246,7 +251,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
             </div>
           ))}
         </div>
-        
+
         <div className="mt-4 relative">
           <textarea
             value={goal}
@@ -279,8 +284,8 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">Leave on Auto to let the AI pick the best fit.</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {FRAMEWORKS.map((fw) => (
-            <div 
-              key={fw.id} 
+            <div
+              key={fw.id}
               onClick={() => setFramework(fw.id)}
               className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 ${framework === fw.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -328,7 +333,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       </div>
 
       {/* Submit Button */}
-      <button 
+      <button
         onClick={handleGenerate}
         disabled={isGenerating || !goal}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#BFFF00] text-zinc-950 text-base font-bold tracking-tight hover:bg-[#d4ff4d] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(191,255,0,0.15)] hover:shadow-[0_0_30px_rgba(191,255,0,0.25)]"
@@ -343,7 +348,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
           </>
         ) : (
           <>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
             Generate Email →
           </>
         )}

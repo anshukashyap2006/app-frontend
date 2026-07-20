@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import apiClient from "../../../Api/api";
+import apiClient from "../../Api/api";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { SocialPostResultView } from "./components/SocialPostResultView";
 
@@ -52,11 +52,11 @@ function PostTypeIcon({ type, className }) {
 export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [project, setProject] = useState(null);
-  
+
   // Form State
   const [platform, setPlatform] = useState("linkedin");
   const [postType, setPostType] = useState("value");
@@ -65,7 +65,7 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
   const [topic, setTopic] = useState("");
   const [toneOverride, setToneOverride] = useState("");
   const [wordCount, setWordCount] = useState("");
-  
+
   // Generation State
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationResult, setGenerationResult] = useState(null);
@@ -101,10 +101,10 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
       alert("You need a voice profile to generate a post.");
       return;
     }
-    
+
     // Pick the default voice profile or the first one
     const defaultVoice = dashboardState.voiceProfiles.find(vp => vp.is_default) || dashboardState.voiceProfiles[0];
-    
+
     try {
       setIsGenerating(true);
       const payload = {
@@ -114,14 +114,14 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
         post_type: postType,
         audience_awareness: audience,
         goal: goal,
-        topic: topic,
+        post_details: topic,
         tone_override: toneOverride || null,
-        word_count: wordCount ? parseInt(wordCount) : null
+        word_count_target: wordCount ? parseInt(wordCount) : null
       };
 
       const res = await apiClient.post(`/api/v1/projects/${projectId}/generate/social`, payload);
       setGenerationResult({ ...res.data, platform: PLATFORMS.find(p => p.id === platform) });
-      
+
       // Update breadcrumbs for result view
       if (setBreadcrumbs) {
         setBreadcrumbs([
@@ -130,7 +130,7 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
           { label: "Result" }
         ]);
       }
-      
+
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.detail || "An error occurred during generation.");
@@ -159,10 +159,10 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
 
   if (generationResult) {
     return (
-      <SocialPostResultView 
-        result={generationResult.latest_version || generationResult} 
+      <SocialPostResultView
+        result={generationResult.latest_version || generationResult}
         platform={generationResult.platform}
-        onBack={handleBackToForm} 
+        onBack={handleBackToForm}
         onRegenerate={handleRegenerate}
       />
     );
@@ -195,8 +195,8 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
         <h2 className="text-lg font-bold text-white tracking-tight mb-4">Platform</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {PLATFORMS.map((p) => (
-            <div 
-              key={p.id} 
+            <div
+              key={p.id}
               onClick={() => setPlatform(p.id)}
               className={`flex flex-col items-center justify-center py-6 px-4 rounded-xl border cursor-pointer transition-all duration-200 relative ${platform === p.id ? 'bg-[#1a365d]/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -220,8 +220,8 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
         <h2 className="text-lg font-bold text-white tracking-tight mb-4">Post Type</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {POST_TYPES.map((type) => (
-            <div 
-              key={type.id} 
+            <div
+              key={type.id}
               onClick={() => setPostType(type.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 relative flex flex-col ${postType === type.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -246,8 +246,8 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">How familiar is this audience with you and your product?</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {AUDIENCE_AWARENESS.map((aud) => (
-            <div 
-              key={aud.id} 
+            <div
+              key={aud.id}
               onClick={() => setAudience(aud.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 flex flex-col items-center text-center ${audience === aud.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -325,7 +325,7 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
           </div>
           <span className="text-sm text-zinc-500">words (min 10)</span>
           {wordCount && (
-            <button 
+            <button
               onClick={() => setWordCount("")}
               className="text-sm text-zinc-400 hover:text-white transition-colors"
             >
@@ -336,7 +336,7 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
       </div>
 
       {/* Submit Button */}
-      <button 
+      <button
         onClick={handleGenerate}
         disabled={isGenerating || !goal || !topic}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#BFFF00] text-zinc-950 text-base font-bold tracking-tight hover:bg-[#d4ff4d] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(191,255,0,0.15)] hover:shadow-[0_0_30px_rgba(191,255,0,0.25)]"

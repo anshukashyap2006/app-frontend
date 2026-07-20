@@ -99,12 +99,12 @@ export function Sidebar({ onNewProject }) {
     <aside className="w-[240px] min-w-[240px] h-full bg-zinc-950 border-r border-zinc-800/60 flex flex-col overflow-hidden">
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
-        <div className="flex items-center gap-2">
+        <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-[#BFFF00] text-lg font-bold">&gt;_</span>
           <span className="text-white text-sm font-bold tracking-[0.08em] uppercase">
-            CopyHack.AI
+            CopyCraft
           </span>
-        </div>
+        </Link>
       </div>
 
       {/* Scrollable nav area */}
@@ -140,41 +140,34 @@ export function Sidebar({ onNewProject }) {
           </button>
         </div>
 
-        {/* Voice Profiles section */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between px-2 mb-2">
-            <p className="text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
-              Voice Profiles
-            </p>
-            <button className="text-zinc-600 hover:text-zinc-400 transition-colors">
-              <ChevronDownIcon />
-            </button>
-          </div>
-          {/* Placeholder profiles — these will be dynamic later */}
-          <SidebarProfileItem name="Brand Voice — SaaS" color={PROFILE_COLORS[0]} />
-          <SidebarProfileItem name="Personal Blog" color={PROFILE_COLORS[1]} />
-          <button className="flex items-center gap-2.5 w-full px-3 py-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors rounded-md hover:bg-zinc-900/50">
-            <span className="w-2 h-2 rounded-full border border-zinc-700 border-dashed" />
-            Add Profile
-          </button>
-        </div>
 
         {/* My Library section */}
         <div className="mb-5">
           <p className="px-2 mb-2 text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
             My Library
           </p>
-          <NavLink to="#" icon={<VoiceIcon />} label="All Voice Profiles" />
-          <NavLink to="#" icon={<FileTextIcon />} label="All Generations" />
-          <NavLink to="#" icon={<BriefcaseIcon />} label="Brand Briefs" />
-          <NavLink to="#" icon={<ShareIcon />} label="Social Media Posts" />
-          <NavLink to="#" icon={<MailIcon />} label="Emails" />
+          <NavLink to="/dashboard/voice-profiles" icon={<VoiceIcon />} label="All Voice Profiles" active={isActive("/dashboard/voice-profiles")} />
+          <NavLink to="/dashboard/generations" icon={<FileTextIcon />} label="All Generations" active={isActive("/dashboard/generations")} />
+          <NavLink 
+            to="/dashboard/sequences" 
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+            } 
+            label="All Sequences" 
+            active={location.pathname.startsWith("/dashboard/sequences")} 
+          />
+          <NavLink to="/dashboard/brand-briefs" icon={<BriefcaseIcon />} label="Brand Briefs" active={isActive("/dashboard/brand-briefs")} />
+          <NavLink to="/dashboard/social-posts" icon={<ShareIcon />} label="Social Media Posts" active={isActive("/dashboard/social-posts")} />
+          <NavLink to="/dashboard/emails" icon={<MailIcon />} label="Emails" active={isActive("/dashboard/emails")} />
         </div>
       </nav>
 
       {/* Bottom section */}
       <div className="border-t border-zinc-800/60 px-3 pt-3 pb-2">
-        <NavLink to="#" icon={<SettingsIcon />} label="Settings" />
+        <NavLink to="/dashboard/settings" icon={<SettingsIcon />} label="Settings" active={isActive("/dashboard/settings")} />
         <NavLink to="#" icon={<HelpIcon />} label="Help & Support" />
       </div>
 
@@ -183,9 +176,9 @@ export function Sidebar({ onNewProject }) {
         <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-lg px-4 py-3">
           <div className="flex items-center justify-between mb-1">
             <span className="text-white text-xs font-semibold">Free Plan</span>
-            <span className="text-[#BFFF00] text-[10px] font-mono font-semibold cursor-pointer hover:text-white transition-colors">
+            <Link to="/dashboard/settings" className="text-[#BFFF00] text-[10px] font-mono font-semibold cursor-pointer hover:text-white transition-colors">
               Manage
-            </span>
+            </Link>
           </div>
           <p className="text-[10px] text-zinc-500 font-mono">
             Generations: <span className="text-zinc-400">—/—</span>

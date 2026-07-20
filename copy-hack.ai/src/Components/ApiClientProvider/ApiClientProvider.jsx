@@ -15,11 +15,11 @@ export default function ApiClientProvider({ children }) {
 
     if (!isLoaded || !isReady) {
         return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-            <p className="text-gray-500 font-medium animate-pulse">
-            Securing CopyCraft workspace...
-            </p>
-        </div>
+            <div className="flex min-h-screen items-center justify-center bg-gray-50">
+                <p className="text-gray-500 font-medium animate-pulse">
+                    Securing CopyCraft workspace...
+                </p>
+            </div>
         );
     }
 

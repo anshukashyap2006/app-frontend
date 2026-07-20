@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import apiClient from "../../../Api/api";
+import apiClient from "../../Api/api";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
+import { SequenceResultView } from "./components/SequenceResultView";
 
 const SEQUENCE_TYPES = [
   { id: "welcome", title: "Welcome", desc: "Onboard new subscribers — build trust, set expectations, deliver first value fast", icon: "mail" },
@@ -52,18 +53,18 @@ function DynamicIcon({ name, className }) {
 export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [project, setProject] = useState(null);
-  
+
   // Form State
   const [sequenceType, setSequenceType] = useState("welcome");
   const [sequenceGoal, setSequenceGoal] = useState("onboard");
   const [audience, setAudience] = useState("warm");
   const [numEmails, setNumEmails] = useState(5);
   const [toneOverride, setToneOverride] = useState("");
-  
+
   // Generation State
   const [isGenerating, setIsGenerating] = useState(false);
   const [planResult, setPlanResult] = useState(null);
@@ -99,9 +100,9 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
       alert("You need a voice profile to generate a sequence plan.");
       return;
     }
-    
+
     const defaultVoice = dashboardState.voiceProfiles.find(vp => vp.is_default) || dashboardState.voiceProfiles[0];
-    
+
     try {
       setIsGenerating(true);
       const payload = {
@@ -116,7 +117,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
 
       const res = await apiClient.post(`/api/v1/projects/${projectId}/sequences/plan`, payload);
       setPlanResult(res.data);
-      
+
       // Update breadcrumbs for result view
       if (setBreadcrumbs) {
         setBreadcrumbs([
@@ -125,7 +126,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
           { label: "Plan Result" }
         ]);
       }
-      
+
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.detail || "An error occurred during sequence planning.");
@@ -158,25 +159,15 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (planResult) {
+    const defaultVoice = dashboardState?.voiceProfiles?.find(vp => vp.is_default) || dashboardState?.voiceProfiles?.[0];
     return (
-      <div className="min-h-full bg-zinc-950 px-6 py-8 md:px-10 flex flex-col">
-        <div className="flex items-center justify-between mb-8">
-          <button 
-            onClick={handleBackToForm}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-800 text-zinc-300 text-sm font-medium hover:border-zinc-700 hover:text-white transition-all bg-zinc-900/50"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Edit plan
-          </button>
-        </div>
-        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-xl p-8 max-w-4xl text-zinc-300">
-           <h2 className="text-xl font-bold text-white mb-4">Plan Generated Successfully!</h2>
-           <p className="mb-4 text-sm text-zinc-400">The result view UI is pending implementation, but the data was successfully fetched.</p>
-           <pre className="text-xs bg-zinc-950 p-4 rounded overflow-auto border border-zinc-800">
-             {JSON.stringify(planResult, null, 2)}
-           </pre>
-        </div>
-      </div>
+      <SequenceResultView 
+        sequence={planResult}
+        project={project}
+        voiceProfile={defaultVoice}
+        brandBrief={project?.brand_brief}
+        onBack={handleBackToForm}
+      />
     );
   }
 
@@ -206,8 +197,8 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">Determines the arc structure, timing cadence, and tone progression across the sequence.</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {SEQUENCE_TYPES.map((type) => (
-            <div 
-              key={type.id} 
+            <div
+              key={type.id}
               onClick={() => setSequenceType(type.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 relative flex flex-col ${sequenceType === type.id ? 'bg-[#1a365d]/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -232,8 +223,8 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">The primary outcome this sequence should produce by the final email.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {SEQUENCE_GOALS.map((goal) => (
-            <div 
-              key={goal.id} 
+            <div
+              key={goal.id}
               onClick={() => setSequenceGoal(goal.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 relative flex flex-col ${sequenceGoal === goal.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -258,8 +249,8 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">How familiar is this audience with you and what you're offering?</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {AUDIENCE_AWARENESS.map((aud) => (
-            <div 
-              key={aud.id} 
+            <div
+              key={aud.id}
               onClick={() => setAudience(aud.id)}
               className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 flex flex-col items-center text-center relative ${audience === aud.id ? 'bg-[#BFFF00]/5 border-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.05)]' : 'bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700'}`}
             >
@@ -282,7 +273,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
         <p className="text-sm text-zinc-500 mb-4">Between 3 and 7. Each will get its own role, subject line, and beat sheet.</p>
         <div className="flex items-center gap-6 mb-4">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => handleNumEmailsChange(-1)}
               className="w-12 h-12 flex items-center justify-center rounded-xl bg-zinc-900/80 border border-zinc-800/80 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             >
@@ -291,7 +282,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
             <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-[#BFFF00]/5 border-2 border-[#BFFF00] text-3xl font-bold text-[#BFFF00] shadow-[0_0_15px_rgba(191,255,0,0.1)]">
               {numEmails}
             </div>
-            <button 
+            <button
               onClick={() => handleNumEmailsChange(1)}
               className="w-12 h-12 flex items-center justify-center rounded-xl bg-zinc-900/80 border border-zinc-800/80 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             >
@@ -300,8 +291,8 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
           </div>
           <div className="flex-1 flex items-center gap-1.5 max-w-sm">
             {[...Array(7)].map((_, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={`h-2 flex-1 rounded-full transition-colors duration-300 ${i < numEmails ? 'bg-[#BFFF00]' : 'bg-zinc-800'}`}
               ></div>
             ))}
@@ -331,7 +322,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
       </div>
 
       {/* Submit Button */}
-      <button 
+      <button
         onClick={handleGenerate}
         disabled={isGenerating}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#BFFF00] text-zinc-950 text-base font-bold tracking-tight hover:bg-[#d4ff4d] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(191,255,0,0.15)] hover:shadow-[0_0_30px_rgba(191,255,0,0.25)]"

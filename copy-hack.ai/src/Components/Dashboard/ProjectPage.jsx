@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import apiClient from "../../../Api/api";
+import apiClient from "../../Api/api";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { QuickActionCard } from "./components/QuickActionCard";
 import { RecentGenerationsList } from "./components/RecentGenerationsList";
+import { EditProjectModal } from "./components/EditProjectModal";
 
 // Format date helper
 function timeAgo(dateString) {
@@ -35,6 +36,7 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
   const [error, setError] = useState(null);
   const [project, setProject] = useState(null);
   const [generations, setGenerations] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProjectData() {
@@ -124,7 +126,10 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
           </div>
         </div>
 
-        <button className="flex items-center gap-2 px-4 py-2 rounded-md bg-zinc-900 text-zinc-300 text-sm font-medium hover:bg-zinc-800 hover:text-white transition-colors border border-zinc-800 shrink-0">
+        <button 
+          onClick={() => setIsEditModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-md bg-zinc-900 text-zinc-300 text-sm font-medium hover:bg-zinc-800 hover:text-white transition-colors border border-zinc-800 shrink-0"
+        >
           <svg
             width="14"
             height="14"
@@ -153,13 +158,12 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
           description="Individual send or full sequence"
           primaryAction={{
             label: "Generate an Email",
-            href: `/generate/email?projectId=${project.id}`,
+            href: `/dashboard/generate/email?projectId=${project.id}`,
           }}
           secondaryAction={{
             label: "Plan a Sequence",
-            href: `/generate/sequence?projectId=${project.id}`,
+            href: `/dashboard/generate/sequence?projectId=${project.id}`,
           }}
-          footerText="12 frameworks available"
         />
         <QuickActionCard
           icon="social"
@@ -167,9 +171,8 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
           description="Instagram, LinkedIn, YouTube, Twitter"
           primaryAction={{
             label: "Generate Posts",
-            href: `/generate/social?projectId=${project.id}`,
+            href: `/dashboard/generate/social?projectId=${project.id}`,
           }}
-          footerText="24 frameworks available"
         />
       </div>
 
@@ -180,7 +183,7 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
             Recent Generations
           </h2>
           <a
-            href={`/generations?projectId=${project.id}`}
+            href={`/dashboard/generations?projectId=${project.id}`}
             className="text-[11px] font-mono text-[#BFFF00] hover:text-white transition-colors duration-150"
           >
             View All {generations.length} →
@@ -192,6 +195,21 @@ export function ProjectPage({ dashboardState, setBreadcrumbs }) {
           emptyMessage="No generations for this project yet. Pick a format above."
         />
       </div>
+
+      <EditProjectModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        project={project}
+        onSuccess={(updatedProject) => {
+          setProject(updatedProject);
+          if (setBreadcrumbs) {
+            setBreadcrumbs([
+              { label: "Projects", href: "/dashboard" },
+              { label: updatedProject.name },
+            ]);
+          }
+        }}
+      />
     </div>
   );
 }
