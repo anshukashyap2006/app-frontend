@@ -10,6 +10,7 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
   const [generation, setGeneration] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   useEffect(() => {
     async function fetchGeneration() {
@@ -40,22 +41,24 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
     if (!generation) return;
 
     try {
-      if (generation.format === "social") {
-        const res = await apiClient.post(`/api/v1/generations/${generationId}/regenerate`);
-        // Refresh data
-        const updatedGen = await apiClient.get(`/api/v1/generations/${generationId}`);
-        setGeneration(updatedGen.data);
-      } else if (generation.format === "email" && generation.email_sequence_id && generation.sequence_position) {
-        // Hit the specific sequence email regenerate endpoint
-        const res = await apiClient.post(`/api/v1/sequences/${generation.email_sequence_id}/emails/${generation.sequence_position}/regenerate`);
-        // Refresh data
-        const updatedGen = await apiClient.get(`/api/v1/generations/${generationId}`);
-        setGeneration(updatedGen.data);
+      setIsRegenerating(true);
+      
+      // If it's a sequence email, use the sequence-specific endpoint
+      if (generation.format === "email" && generation.email_sequence_id && generation.sequence_position) {
+        await apiClient.post(`/api/v1/sequences/${generation.email_sequence_id}/emails/${generation.sequence_position}/regenerate`);
       } else {
-        alert("Regeneration for this format from detail view is not fully implemented here yet.");
+        // Use the generic endpoint for social posts and standalone emails
+        await apiClient.post(`/api/v1/generations/${generationId}/regenerate`);
       }
+      
+      // Refresh data
+      const updatedGen = await apiClient.get(`/api/v1/generations/${generationId}`);
+      setGeneration(updatedGen.data);
+      
     } catch (err) {
       alert("Error regenerating: " + (err.response?.data?.detail || err.message));
+    } finally {
+      setIsRegenerating(false);
     }
   };
 
@@ -93,6 +96,7 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
         onBack={handleBack}
         onRegenerate={handleRegenerate}
         emailType={generation.sub_type}
+        isRegenerating={isRegenerating}
       />
     );
   }
@@ -111,6 +115,7 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
         platform={platformData}
         onBack={handleBack}
         onRegenerate={handleRegenerate}
+        isRegenerating={isRegenerating}
       />
     );
   }
@@ -128,3 +133,4 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
     </div>
   );
 }
+

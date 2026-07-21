@@ -15,7 +15,11 @@ export function DashboardPage({ dashboardState, setBreadcrumbs, onNewProject }) 
     if (setBreadcrumbs) {
       setBreadcrumbs(null);
     }
-  }, [setBreadcrumbs]);
+    // Refresh dashboard data silently when navigating to the home dashboard
+    if (dashboardState?.refresh) {
+      dashboardState.refresh();
+    }
+  }, [setBreadcrumbs, dashboardState?.refresh]);
 
   const {
     loading,

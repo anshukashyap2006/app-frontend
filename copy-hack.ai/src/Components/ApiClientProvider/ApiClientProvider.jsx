@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { setupAxiosInterceptors } from '../../Api/api';
 
+import PageLoader from '../PageLoader';
+
 export default function ApiClientProvider({ children }) {
     const { getToken, isLoaded } = useAuth();
     const [isReady, setIsReady] = useState(false);
@@ -14,13 +16,7 @@ export default function ApiClientProvider({ children }) {
     }, [isLoaded, getToken]);
 
     if (!isLoaded || !isReady) {
-        return (
-            <div className="flex min-h-screen items-center justify-center bg-gray-50">
-                <p className="text-gray-500 font-medium animate-pulse">
-                    Securing CopyCraft workspace...
-                </p>
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return children;

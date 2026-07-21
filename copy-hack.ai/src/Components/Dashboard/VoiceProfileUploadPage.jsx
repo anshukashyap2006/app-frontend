@@ -21,6 +21,7 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
   const method = searchParams.get("method") || "upload";
 
   const [file, setFile] = useState(null);
+  const [pastedText, setPastedText] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -119,12 +120,17 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
   };
 
   const handleExtract = async () => {
-    if (!file) return;
+    if (!file && !pastedText.trim()) return;
     setLoading(true);
     setError(null);
 
     const formDataUpload = new FormData();
-    formDataUpload.append("file", file);
+    if (file) {
+      formDataUpload.append("file", file);
+    } else if (pastedText.trim()) {
+      const blob = new Blob([pastedText], { type: 'text/plain' });
+      formDataUpload.append("file", blob, "pasted_text.txt");
+    }
 
     try {
       const res = await apiClient.post("/api/v1/voice/extract", formDataUpload, {
@@ -279,10 +285,30 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
           </button>
         </div>
 
+        <div className="relative flex py-8 items-center">
+            <div className="flex-grow border-t border-zinc-800"></div>
+            <span className="flex-shrink-0 mx-4 text-zinc-500 text-xs font-mono tracking-widest uppercase">Or Paste Text</span>
+            <div className="flex-grow border-t border-zinc-800"></div>
+        </div>
+
+        <div className="mb-6">
+          <textarea
+            value={pastedText}
+            onChange={(e) => {
+              setPastedText(e.target.value);
+              if (e.target.value.trim() && file) {
+                setFile(null); // Clear file if user starts typing
+              }
+            }}
+            placeholder="Paste your best copy here..."
+            className="w-full h-48 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all resize-y"
+          />
+        </div>
+
         <div className="mt-8 flex justify-end">
           <button
             onClick={handleExtract}
-            disabled={!file || loading}
+            disabled={(!file && !pastedText.trim()) || loading}
             className="px-6 py-3 rounded-xl bg-[#BFFF00] text-zinc-950 font-semibold hover:bg-[#d4ff4d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-[0_0_15px_rgba(191,255,0,0.15)]"
           >
             {loading ? (

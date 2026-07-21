@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function CircularScore({ score, label, subtitle, colorClass }) {
   const radius = 36;
@@ -38,7 +38,7 @@ function CircularScore({ score, label, subtitle, colorClass }) {
   );
 }
 
-export function EmailResultView({ result, onBack, onRegenerate, projectName, voiceProfileName, brandBriefName, emailType }) {
+export function EmailResultView({ result, onBack, onRegenerate, projectName, voiceProfileName, brandBriefName, emailType, isRegenerating }) {
   if (!result || !result.content) return null;
 
   const content = result.content;
@@ -48,10 +48,13 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
   const critic = result.critic_scores || {};
   const totalScore = critic.total_score || critic.overall || 0;
 
+  const [isCopied, setIsCopied] = useState(false);
+
   const handleCopy = () => {
     const textToCopy = `Subject: ${subject}\n\n${body}`;
     navigator.clipboard.writeText(textToCopy);
-    alert("Email copied to clipboard!");
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -104,9 +107,18 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </button>
 
-          <button onClick={handleCopy} className="flex items-center gap-2 px-4 py-2 rounded-md border border-zinc-800 text-white text-sm font-medium hover:bg-zinc-800 transition-colors bg-zinc-900/50">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Copy email
+          <button onClick={handleCopy} className={`flex items-center gap-2 px-4 py-2 rounded-md border text-sm font-medium transition-colors ${isCopied ? 'border-[#BFFF00] text-[#BFFF00] bg-[#BFFF00]/10' : 'border-zinc-800 text-white hover:bg-zinc-800 bg-zinc-900/50'}`}>
+            {isCopied ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Copied
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy email
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -133,10 +145,23 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
           <div className="mt-12 pt-8 border-t border-zinc-800/60">
             <button 
               onClick={onRegenerate}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900/50 text-white text-sm font-semibold hover:border-zinc-500 hover:bg-zinc-800 transition-all shadow-sm"
+              disabled={isRegenerating}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900/50 text-white text-sm font-semibold hover:border-zinc-500 hover:bg-zinc-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 2v6h6"/></svg>
-              Regenerate Email
+              {isRegenerating ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Regenerating Email...
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 2v6h6"/></svg>
+                  Regenerate Email
+                </>
+              )}
             </button>
           </div>
         </div>

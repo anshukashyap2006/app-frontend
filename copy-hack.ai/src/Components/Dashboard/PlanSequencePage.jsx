@@ -155,7 +155,7 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
     });
   };
 
-  if (loading) return <DashboardSkeleton />;
+  if (loading || isGenerating) return <DashboardSkeleton />;
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (planResult) {

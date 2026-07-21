@@ -17,6 +17,7 @@ import { VoiceProfileUploadPage } from "./VoiceProfileUploadPage";
 import { SequencesPage } from "./SequencesPage";
 import { SequenceDetailPage } from "./SequenceDetailPage";
 import { SettingsPage } from "./SettingsPage";
+import { HelpCenterPage } from "./HelpCenterPage";
 import { NewProjectModal } from "./components/NewProjectModal";
 import { useDashboard } from "./hooks/useDashboard";
 
@@ -43,7 +44,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-zinc-950 overflow-hidden">
       {/* Sidebar */}
-      <Sidebar onNewProject={handleNewProject} />
+      <Sidebar onNewProject={handleNewProject} dashboardState={dashboard} />
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -67,6 +68,7 @@ export default function Dashboard() {
             <Route path="sequences/:sequenceId" element={<SequenceDetailPage setBreadcrumbs={setBreadcrumbs} />} />
             <Route path="generations/:generationId" element={<GenerationDetailPage setBreadcrumbs={setBreadcrumbs} />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="help" element={<HelpCenterPage />} />
           </Routes>
         </main>
       </div>

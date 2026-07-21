@@ -91,9 +91,15 @@ const ChevronDownIcon = () => (
 // Profile color dots
 const PROFILE_COLORS = ["#BFFF00", "#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#DDA0DD"];
 
-export function Sidebar({ onNewProject }) {
+export function Sidebar({ onNewProject, dashboardState }) {
   const location = useLocation();
+
   const isActive = (path) => location.pathname === path;
+
+  // Plan info
+  const planName = dashboardState?.subscription?.plan_name || "Free";
+  const used = dashboardState?.subscription?.generations_used || 0;
+  const limit = dashboardState?.subscription?.generations_limit || 0;
 
   return (
     <aside className="w-[240px] min-w-[240px] h-full bg-zinc-950 border-r border-zinc-800/60 flex flex-col overflow-hidden">
@@ -168,21 +174,21 @@ export function Sidebar({ onNewProject }) {
       {/* Bottom section */}
       <div className="border-t border-zinc-800/60 px-3 pt-3 pb-2">
         <NavLink to="/dashboard/settings" icon={<SettingsIcon />} label="Settings" active={isActive("/dashboard/settings")} />
-        <NavLink to="#" icon={<HelpIcon />} label="Help & Support" />
+        <NavLink to="/dashboard/help" icon={<HelpIcon />} label="Help & Support" active={isActive("/dashboard/help")} />
       </div>
 
       {/* Plan badge */}
       <div className="px-4 pb-5 pt-2">
         <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-lg px-4 py-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-white text-xs font-semibold">Free Plan</span>
-            <Link to="/dashboard/settings" className="text-[#BFFF00] text-[10px] font-mono font-semibold cursor-pointer hover:text-white transition-colors">
-              Manage
-            </Link>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-white text-xs font-semibold capitalize">{planName} Plan</span>
           </div>
-          <p className="text-[10px] text-zinc-500 font-mono">
-            Generations: <span className="text-zinc-400">—/—</span>
-          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Generations</span>
+            <span className="text-[#BFFF00] font-mono text-sm font-bold bg-[#BFFF00]/10 px-2 py-0.5 rounded-md">
+              {used}<span className="text-zinc-500 text-xs font-medium">/{limit}</span>
+            </span>
+          </div>
         </div>
       </div>
     </aside>

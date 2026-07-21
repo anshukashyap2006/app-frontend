@@ -154,16 +154,22 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
     await handleGenerate();
   };
 
-  if (loading) return <DashboardSkeleton />;
+  if (loading || isGenerating) return <DashboardSkeleton />;
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (generationResult) {
+    // The API returns GenerationDetailResponse with a `versions` array.
+    // critic_scores live on each version, not on the generation itself.
+    const versions = generationResult.versions || [];
+    const latestVersion = versions.length > 0 ? versions[versions.length - 1] : generationResult;
+
     return (
       <SocialPostResultView
-        result={generationResult.latest_version || generationResult}
+        result={latestVersion}
         platform={generationResult.platform}
         onBack={handleBackToForm}
         onRegenerate={handleRegenerate}
+        isRegenerating={isGenerating}
       />
     );
   }

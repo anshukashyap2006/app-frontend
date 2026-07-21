@@ -50,6 +50,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
 
   // Form State
   const [emailType, setEmailType] = useState("launch");
+  const [customEmailType, setCustomEmailType] = useState("");
   const [goal, setGoal] = useState("");
   const [cta, setCta] = useState("");
   const [framework, setFramework] = useState("none");
@@ -100,7 +101,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       const payload = {
         voice_profile_id: defaultVoice.id,
         brand_brief_id: project.brand_brief.id,
-        email_type: emailType,
+        email_type: emailType === "custom" ? `Custom: ${customEmailType}` : emailType,
         goal: goal,
         cta: cta || "Click here", // Ensure CTA has fallback if empty
         framework: framework === "none" ? null : framework,
@@ -145,7 +146,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
     await handleGenerate();
   };
 
-  if (loading) return <DashboardSkeleton />;
+  if (loading || isGenerating) return <DashboardSkeleton />;
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (generationResult) {
@@ -209,7 +210,6 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
         </div>
       </div>
 
-      {/* Email Type */}
       <div className="mb-10">
         <h2 className="text-lg font-bold text-white tracking-tight mb-4">What kind of email is this?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -225,7 +225,28 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
                 </div>
               )}
               <h3 className={`font-semibold mb-2 ${emailType === type.id ? 'text-[#BFFF00]' : 'text-white'}`}>{type.title}</h3>
-              <p className="text-sm text-zinc-500 leading-relaxed pr-6">{type.desc}</p>
+              
+              {type.id === "custom" && emailType === "custom" ? (
+                <div className="mt-3 relative" onClick={e => e.stopPropagation()}>
+                  <textarea
+                    autoFocus
+                    value={customEmailType}
+                    onChange={(e) => {
+                      const words = e.target.value.split(/\s+/).filter(Boolean);
+                      if (words.length <= 100) {
+                        setCustomEmailType(e.target.value);
+                      }
+                    }}
+                    placeholder="e.g. Apology email for server downtime, or a highly technical changelog update..."
+                    className="w-full h-24 bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-zinc-300 text-xs focus:outline-none focus:border-[#BFFF00]/50 transition-colors resize-none"
+                  />
+                  <div className="absolute bottom-2 right-2 text-[9px] font-mono text-zinc-500">
+                    {customEmailType.split(/\s+/).filter(Boolean).length}/100 words
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-zinc-500 leading-relaxed pr-6">{type.desc}</p>
+              )}
             </div>
           ))}
         </div>
