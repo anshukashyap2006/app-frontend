@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { downloadCopyAsPDF } from "../../../utils/pdfGenerator";
 
 function CircularScore({ score, label, subtitle, colorClass }) {
   const radius = 36;
@@ -44,6 +45,7 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
   const content = result.content;
   const subject = content.subject_line || content.subject || "No Subject";
   const body = content.body || content.email_body || content.content || "No body content.";
+  const versionNumber = result.version_number || 1;
 
   const critic = result.critic_scores || {};
   const totalScore = critic.total_score || critic.overall || 0;
@@ -93,6 +95,9 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
                 <span className="text-xs font-medium text-[#BFFF00] capitalize">{emailType}</span>
               </div>
             )}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900/50">
+              <span className="text-xs font-medium text-zinc-300">v{versionNumber}</span>
+            </div>
           </div>
         </div>
 
@@ -103,7 +108,18 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
             <span className="text-sm font-bold text-[#BFFF00]">{totalScore} / 100</span>
           </div>
 
-          <button className="p-2 rounded-md border border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors bg-zinc-900/50">
+          <button 
+            onClick={() => {
+              downloadCopyAsPDF({
+                type: "EMAIL",
+                subject: subject,
+                body: body,
+                filename: `CopyCraft_Email_${emailType || "Generated"}.pdf`
+              });
+            }}
+            className="p-2 rounded-md border border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors bg-zinc-900/50"
+            title="Download PDF"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </button>
 

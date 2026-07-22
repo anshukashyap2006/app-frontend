@@ -76,6 +76,10 @@ export function RecentGenerationsList({ generations, emptyMessage }) {
         const criticScore = gen.latest_version?.critic_scores?.overall
           ?? gen.versions?.[0]?.critic_scores?.overall
           ?? null;
+          
+        const versionNumber = gen.latest_version?.version_number
+          ?? gen.versions?.[0]?.version_number
+          ?? 1;
 
         return (
           <Link
@@ -110,6 +114,14 @@ export function RecentGenerationsList({ generations, emptyMessage }) {
                     <span className="text-zinc-700 text-[10px]">·</span>
                     <span className="text-[10px] text-zinc-600 font-mono capitalize">
                       {platform}
+                    </span>
+                  </>
+                )}
+                {versionNumber > 1 && (
+                  <>
+                    <span className="text-zinc-700 text-[10px]">·</span>
+                    <span className="text-[10px] text-zinc-500 font-mono bg-zinc-800/50 px-1.5 py-0.5 rounded">
+                      v{versionNumber}
                     </span>
                   </>
                 )}

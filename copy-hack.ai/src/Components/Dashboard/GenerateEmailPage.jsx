@@ -345,11 +345,19 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
         <div className="relative">
           <textarea
             value={extra}
-            onChange={(e) => setExtra(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              const wordCount = val.trim() ? val.trim().split(/\s+/).length : 0;
+              if (wordCount <= 200 || val.length < extra.length) {
+                setExtra(val);
+              }
+            }}
             className="w-full h-28 bg-zinc-900/40 border border-zinc-800/60 rounded-xl p-4 text-zinc-300 text-sm focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-colors resize-none"
             placeholder="e.g. Open with the stat that 73% of AI emails are spotted in under 3 seconds. Founder tone, not marketing blast."
           />
-          <div className="absolute bottom-4 right-4 text-[10px] font-mono text-zinc-600">{extra.length}/200</div>
+          <div className="absolute bottom-4 right-4 text-[10px] font-mono text-zinc-600">
+            {extra.trim() ? extra.trim().split(/\s+/).length : 0} / 200 words
+          </div>
         </div>
       </div>
 

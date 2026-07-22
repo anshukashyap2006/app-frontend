@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { downloadCopyAsPDF } from "../../../utils/pdfGenerator";
 
 function CircularScore({ score, label, subtitle, colorClass }) {
   const radius = 36;
@@ -70,6 +71,7 @@ export function SocialPostResultView({ result, platform, onBack, onRegenerate, i
 
   const content = result.content;
   const body = content.post_body || content.body || content.content || (typeof content === 'string' ? content : "No body content.");
+  const versionNumber = result.version_number || 1;
 
   const critic = result.critic_scores || {};
   
@@ -108,6 +110,21 @@ export function SocialPostResultView({ result, platform, onBack, onRegenerate, i
 
         <div className="flex items-center gap-3">
           <button 
+            onClick={() => {
+              downloadCopyAsPDF({
+                type: "SOCIAL POST",
+                body: content.body || content.post_body || content.content || "",
+                filename: `CopyCraft_SocialPost_${platform?.title || "Generated"}.pdf`
+              });
+            }}
+            disabled={isRegenerating}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-800 text-zinc-300 text-sm font-medium hover:border-zinc-700 hover:text-white transition-all bg-zinc-900/50 disabled:opacity-50"
+            title="Download PDF"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PDF
+          </button>
+          <button 
             onClick={handleCopy}
             disabled={isRegenerating}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
@@ -140,8 +157,11 @@ export function SocialPostResultView({ result, platform, onBack, onRegenerate, i
                 <span className="text-xl font-serif text-blue-400 font-bold">{platform.title}</span>
               </div>
               <div>
-                <h2 className="text-white font-semibold">{platform.defaultName} Post</h2>
-                <p className="text-xs text-zinc-500">{body.length} / {platform.charLimit} characters</p>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-white font-semibold">{platform.defaultName} Post</h2>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-zinc-800 text-zinc-400">v{versionNumber}</span>
+                </div>
+                <p className="text-xs text-zinc-500 mt-1">{body.length} / {platform.charLimit} characters</p>
               </div>
             </div>
           )}
