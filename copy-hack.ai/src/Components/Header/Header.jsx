@@ -1,14 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { SignedIn , SignedOut , UserButton } from "@clerk/clerk-react";
+import Logo from "../Logo";
 
 export default function Header() {
     return (
         <header className="sticky z-50 top-0 backdrop-blur-md bg-[#09090b]/80 border-b border-white/5">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                <Link to="/" className="text-xl font-bold text-white flex items-center gap-2 tracking-tight">
-                    <span className="text-[#BFFF00]">&gt;_</span> COPYCRAFT
-                </Link>
+                <Logo className="h-8" />
 
                 <nav className="flex items-center gap-6">
                     <div className="hidden md:flex items-center gap-6 text-sm text-zinc-400 font-medium mr-4">

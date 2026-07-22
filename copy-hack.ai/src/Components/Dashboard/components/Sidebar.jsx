@@ -1,6 +1,7 @@
 import React from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useLocation, Link } from "react-router-dom";
+import Logo from "../../../Logo";
 
 // Icons as inline SVG components for zero-dependency approach
 const DashboardIcon = () => (
@@ -105,12 +106,7 @@ export function Sidebar({ onNewProject, dashboardState }) {
     <aside className="w-[240px] min-w-[240px] h-full bg-zinc-950 border-r border-zinc-800/60 flex flex-col overflow-hidden">
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
-        <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="text-[#BFFF00] text-lg font-bold">&gt;_</span>
-          <span className="text-white text-sm font-bold tracking-[0.08em] uppercase">
-            CopyCraft
-          </span>
-        </Link>
+        <Logo className="h-6" textClassName="text-base uppercase tracking-[0.08em]" />
       </div>
 
       {/* Scrollable nav area */}
