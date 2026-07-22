@@ -359,6 +359,7 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
               </label>
               <input
                 type="text"
+                required
                 value={formData.profile_name}
                 onChange={e => setFormData({ ...formData, profile_name: e.target.value })}
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all"

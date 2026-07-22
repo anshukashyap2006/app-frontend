@@ -88,6 +88,7 @@ export function EditBrandBriefModal({ isOpen, onClose, brief, onSuccess }) {
                   </label>
                   <input
                     type="text"
+                    required
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all"
@@ -100,6 +101,7 @@ export function EditBrandBriefModal({ isOpen, onClose, brief, onSuccess }) {
                   </label>
                   <input
                     type="text"
+                    required
                     value={formData.product_name}
                     onChange={e => setFormData({ ...formData, product_name: e.target.value })}
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all"
@@ -113,6 +115,7 @@ export function EditBrandBriefModal({ isOpen, onClose, brief, onSuccess }) {
                   Product Description <span className="text-red-400">*</span>
                 </label>
                 <textarea
+                  required
                   value={formData.product_description}
                   onChange={e => setFormData({ ...formData, product_description: e.target.value })}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all min-h-[100px] resize-y"
@@ -125,6 +128,7 @@ export function EditBrandBriefModal({ isOpen, onClose, brief, onSuccess }) {
                   Target Avatar <span className="text-red-400">*</span>
                 </label>
                 <textarea
+                  required
                   value={formData.target_avatar}
                   onChange={e => setFormData({ ...formData, target_avatar: e.target.value })}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all min-h-[80px] resize-y"

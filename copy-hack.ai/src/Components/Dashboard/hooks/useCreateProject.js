@@ -9,15 +9,17 @@ import apiClient from "../../../Api/api";
  *   with either `mode: "existing"` or `mode: "new"` depending on whether
  *   the user picked an existing brief or filled one inline.
  */
-export function useCreateProject() {
+export function useCreateProject(isOpen = true) {
   const [brandBriefs, setBrandBriefs] = useState([]);
   const [loadingBriefs, setLoadingBriefs] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch brand briefs on mount
+  // Fetch brand briefs on mount or when modal opens
   useEffect(() => {
     async function fetchBriefs() {
+      if (!isOpen) return;
+      setLoadingBriefs(true);
       try {
         const res = await apiClient.get("/api/v1/brand-briefs/");
         setBrandBriefs(res.data);
@@ -29,7 +31,7 @@ export function useCreateProject() {
       }
     }
     fetchBriefs();
-  }, []);
+  }, [isOpen]);
 
   /**
    * Create a project.

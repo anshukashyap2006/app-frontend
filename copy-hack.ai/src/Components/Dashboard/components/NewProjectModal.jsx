@@ -88,7 +88,7 @@ export function NewProjectModal({ isOpen, onClose, voiceProfiles = [], onProject
     createProject,
     isSubmitting,
     error: submitError,
-  } = useCreateProject();
+  } = useCreateProject(isOpen);
 
   // Reset when opening
   useEffect(() => {
@@ -179,7 +179,16 @@ export function NewProjectModal({ isOpen, onClose, voiceProfiles = [], onProject
   // ─── Navigation ───────────────────────────────────────────────────────────
 
   function goNext() {
-    if (!validateStep(step)) return;
+    if (!validateStep(step)) {
+      setTimeout(() => {
+        const firstError = document.querySelector('.has-error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstError.focus();
+        }
+      }, 50);
+      return;
+    }
     setDirection("right");
     setStep((s) => Math.min(s + 1, 4));
   }

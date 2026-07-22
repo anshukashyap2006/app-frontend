@@ -68,6 +68,7 @@ export function EditProjectModal({ isOpen, onClose, project, onSuccess }) {
               </label>
               <input
                 type="text"
+                required
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#BFFF00] focus:ring-1 focus:ring-[#BFFF00] transition-all"

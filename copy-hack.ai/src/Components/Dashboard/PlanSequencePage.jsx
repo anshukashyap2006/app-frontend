@@ -313,11 +313,19 @@ export function PlanSequencePage({ dashboardState, setBreadcrumbs }) {
         <div className="relative">
           <textarea
             value={toneOverride}
-            onChange={(e) => setToneOverride(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              const wordCount = val.trim() ? val.trim().split(/\s+/).length : 0;
+              if (wordCount <= 200 || val.length < toneOverride.length) {
+                setToneOverride(val);
+              }
+            }}
             className="w-full h-24 bg-zinc-900/40 border border-zinc-800/60 rounded-xl p-4 text-zinc-300 text-sm focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-colors resize-none"
             placeholder="e.g. The whole sequence should feel like emails from a fellow founder, not a SaaS company. No 'we' language — always 'I'. No CTA until Email 4."
           />
-          <div className="absolute bottom-4 right-4 text-[10px] font-mono text-zinc-600">{toneOverride.length} / 200</div>
+          <div className="absolute bottom-4 right-4 text-[10px] font-mono text-zinc-600">
+            {toneOverride.trim() ? toneOverride.trim().split(/\s+/).length : 0} / 200 words
+          </div>
         </div>
       </div>
 
