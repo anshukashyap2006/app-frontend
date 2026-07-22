@@ -60,6 +60,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   // Generation State
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationResult, setGenerationResult] = useState(null);
+  const [selectedVersionId, setSelectedVersionId] = useState(null);
 
   useEffect(() => {
     async function fetchProject() {
@@ -111,6 +112,10 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
 
       const res = await apiClient.post(`/api/v1/projects/${projectId}/generate/email`, payload);
       setGenerationResult(res.data);
+      const latest = res.data.versions && res.data.versions.length > 0 ? res.data.versions[res.data.versions.length - 1] : res.data.latest_version;
+      if (latest) {
+        setSelectedVersionId(latest.id);
+      }
 
       // Update breadcrumbs for result view
       if (setBreadcrumbs) {
@@ -151,15 +156,23 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
 
   if (generationResult) {
     const defaultVoice = dashboardState?.voiceProfiles?.find(vp => vp.is_default) || dashboardState?.voiceProfiles?.[0];
+    const versions = generationResult.versions || (generationResult.latest_version ? [generationResult.latest_version] : []);
+    const latestVersion = versions.length > 0 ? versions[versions.length - 1] : null;
+    const displayVersion = versions.find(v => v.id === selectedVersionId) || latestVersion || generationResult;
+
     return (
       <EmailResultView
-        result={generationResult.latest_version || generationResult}
+        result={displayVersion}
         onBack={handleBackToForm}
         onRegenerate={handleRegenerate}
         projectName={project?.name}
         voiceProfileName={defaultVoice?.name}
         brandBriefName={project?.brand_brief?.name}
         emailType={emailType}
+        isRegenerating={isGenerating}
+        versions={versions}
+        selectedVersionId={displayVersion?.id}
+        onSelectVersion={setSelectedVersionId}
       />
     );
   }

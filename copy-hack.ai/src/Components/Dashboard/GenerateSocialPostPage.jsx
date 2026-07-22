@@ -69,6 +69,7 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
   // Generation State
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationResult, setGenerationResult] = useState(null);
+  const [selectedVersionId, setSelectedVersionId] = useState(null);
 
   useEffect(() => {
     async function fetchProject() {
@@ -121,6 +122,10 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
 
       const res = await apiClient.post(`/api/v1/projects/${projectId}/generate/social`, payload);
       setGenerationResult({ ...res.data, platform: PLATFORMS.find(p => p.id === platform) });
+      const latest = res.data.versions && res.data.versions.length > 0 ? res.data.versions[res.data.versions.length - 1] : res.data.latest_version;
+      if (latest) {
+        setSelectedVersionId(latest.id);
+      }
 
       // Update breadcrumbs for result view
       if (setBreadcrumbs) {
@@ -158,18 +163,20 @@ export function GenerateSocialPostPage({ dashboardState, setBreadcrumbs }) {
   if (error) return <div className="text-red-400 p-8">{error}</div>;
 
   if (generationResult) {
-    // The API returns GenerationDetailResponse with a `versions` array.
-    // critic_scores live on each version, not on the generation itself.
-    const versions = generationResult.versions || [];
-    const latestVersion = versions.length > 0 ? versions[versions.length - 1] : generationResult;
+    const versions = generationResult.versions || (generationResult.latest_version ? [generationResult.latest_version] : []);
+    const latestVersion = versions.length > 0 ? versions[versions.length - 1] : null;
+    const displayVersion = versions.find(v => v.id === selectedVersionId) || latestVersion || generationResult;
 
     return (
       <SocialPostResultView
-        result={latestVersion}
+        result={displayVersion}
         platform={generationResult.platform}
         onBack={handleBackToForm}
         onRegenerate={handleRegenerate}
         isRegenerating={isGenerating}
+        versions={versions}
+        selectedVersionId={displayVersion?.id}
+        onSelectVersion={setSelectedVersionId}
       />
     );
   }
