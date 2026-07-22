@@ -39,7 +39,7 @@ function CircularScore({ score, label, subtitle, colorClass }) {
   );
 }
 
-export function EmailResultView({ result, onBack, onRegenerate, projectName, voiceProfileName, brandBriefName, emailType, isRegenerating }) {
+export function EmailResultView({ result, onBack, onRegenerate, projectName, voiceProfileName, brandBriefName, emailType, isRegenerating, versions, selectedVersionId, onSelectVersion }) {
   if (!result || !result.content) return null;
 
   const content = result.content;
@@ -95,9 +95,26 @@ export function EmailResultView({ result, onBack, onRegenerate, projectName, voi
                 <span className="text-xs font-medium text-[#BFFF00] capitalize">{emailType}</span>
               </div>
             )}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900/50">
-              <span className="text-xs font-medium text-zinc-300">v{versionNumber}</span>
-            </div>
+            {versions && versions.length > 1 ? (
+              <div className="flex items-center px-3 py-1.5 rounded-md border border-[#BFFF00]/50 bg-[#BFFF00]/10 hover:bg-[#BFFF00]/20 transition-colors">
+                <select
+                  value={selectedVersionId}
+                  onChange={(e) => onSelectVersion(e.target.value)}
+                  className="bg-transparent text-xs font-bold text-[#BFFF00] outline-none cursor-pointer appearance-none pr-4 relative"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23BFFF00'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right center', backgroundSize: '12px' }}
+                >
+                  {versions.map(v => (
+                    <option key={v.id} value={v.id} className="bg-zinc-900 text-zinc-300">
+                      v{v.version_number} {v.version_number === versions[versions.length-1].version_number ? '(Latest)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#BFFF00]/50 bg-[#BFFF00]/10">
+                <span className="text-xs font-bold text-[#BFFF00]">v{versionNumber}</span>
+              </div>
+            )}
           </div>
         </div>
 

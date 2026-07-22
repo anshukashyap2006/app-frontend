@@ -66,7 +66,7 @@ function RegeneratingOverlay() {
   );
 }
 
-export function SocialPostResultView({ result, platform, onBack, onRegenerate, isRegenerating = false }) {
+export function SocialPostResultView({ result, platform, onBack, onRegenerate, isRegenerating = false, versions, selectedVersionId, onSelectVersion }) {
   if (!result || !result.content) return null;
 
   const content = result.content;
@@ -159,7 +159,24 @@ export function SocialPostResultView({ result, platform, onBack, onRegenerate, i
               <div>
                 <div className="flex items-center gap-3">
                   <h2 className="text-white font-semibold">{platform.defaultName} Post</h2>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-zinc-800 text-zinc-400">v{versionNumber}</span>
+                  {versions && versions.length > 1 ? (
+                    <select
+                      value={selectedVersionId}
+                      onChange={(e) => onSelectVersion(e.target.value)}
+                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#BFFF00]/20 border border-[#BFFF00]/50 text-[#BFFF00] outline-none cursor-pointer appearance-none pr-4"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23BFFF00'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right center', backgroundSize: '10px' }}
+                    >
+                      {versions.map(v => (
+                        <option key={v.id} value={v.id} className="bg-zinc-900 text-zinc-300">
+                          v{v.version_number} {v.version_number === versions[versions.length-1].version_number ? '(Latest)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#BFFF00]/20 border border-[#BFFF00]/50 text-[#BFFF00]">
+                      v{versionNumber}
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-zinc-500 mt-1">{body.length} / {platform.charLimit} characters</p>
               </div>

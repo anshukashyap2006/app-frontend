@@ -11,12 +11,17 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [selectedVersionId, setSelectedVersionId] = useState(null);
 
   useEffect(() => {
     async function fetchGeneration() {
       try {
         const res = await apiClient.get(`/api/v1/generations/${generationId}`);
         setGeneration(res.data);
+        const latest = res.data.latest_version || (res.data.versions?.length > 0 ? res.data.versions[res.data.versions.length - 1] : null);
+        if (latest && !selectedVersionId) {
+          setSelectedVersionId(latest.id);
+        }
 
         if (setBreadcrumbs) {
           setBreadcrumbs([
@@ -54,6 +59,10 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
       // Refresh data
       const updatedGen = await apiClient.get(`/api/v1/generations/${generationId}`);
       setGeneration(updatedGen.data);
+      const latest = updatedGen.data.latest_version || (updatedGen.data.versions?.length > 0 ? updatedGen.data.versions[updatedGen.data.versions.length - 1] : null);
+      if (latest) {
+        setSelectedVersionId(latest.id);
+      }
       
     } catch (err) {
       alert("Error regenerating: " + (err.response?.data?.detail || err.message));
@@ -78,9 +87,11 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
     );
   }
 
-  const latestVersion = generation?.latest_version || (generation?.versions?.length > 0 ? generation.versions[generation.versions.length - 1] : null);
+  const versions = generation?.versions || (generation?.latest_version ? [generation.latest_version] : []);
+  const latestVersion = versions.length > 0 ? versions[versions.length - 1] : null;
+  const displayVersion = versions.find(v => v.id === selectedVersionId) || latestVersion;
 
-  if (!generation || !latestVersion) {
+  if (!generation || !displayVersion) {
     return (
       <div className="p-8 h-full bg-zinc-950 flex justify-center items-center flex-col gap-4">
         <p className="text-zinc-500 font-mono">No generation content found.</p>
@@ -92,11 +103,14 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
   if (generation.format === "email") {
     return (
       <EmailResultView
-        result={latestVersion}
+        result={displayVersion}
         onBack={handleBack}
         onRegenerate={handleRegenerate}
         emailType={generation.sub_type}
         isRegenerating={isRegenerating}
+        versions={versions}
+        selectedVersionId={displayVersion.id}
+        onSelectVersion={setSelectedVersionId}
       />
     );
   }
@@ -111,11 +125,14 @@ export function GenerationDetailPage({ setBreadcrumbs }) {
 
     return (
       <SocialPostResultView
-        result={latestVersion}
+        result={displayVersion}
         platform={platformData}
         onBack={handleBack}
         onRegenerate={handleRegenerate}
         isRegenerating={isRegenerating}
+        versions={versions}
+        selectedVersionId={displayVersion.id}
+        onSelectVersion={setSelectedVersionId}
       />
     );
   }
