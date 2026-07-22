@@ -20,12 +20,10 @@ export const setupAxiosInterceptors = (getToken) => {
     // intereceptors method acts as a middleware to modify headers before sending it to server
     apiClient.interceptors.request.use(
         async (config) => {
-            console.log("Interceptor executed");
 
             try {
                 // fetch jwt from clerk
                 const token = await getToken();
-                console.log("Token: ", token);
 
                 if (token) {
                     config.headers.Authorization = `Bearer ${token}`;
