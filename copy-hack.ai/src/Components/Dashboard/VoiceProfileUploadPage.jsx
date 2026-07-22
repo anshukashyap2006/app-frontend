@@ -20,7 +20,7 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const method = searchParams.get("method") || "upload";
 
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [pastedText, setPastedText] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -101,35 +101,43 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
     e.stopPropagation();
     setDragActive(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (validateFile(droppedFile)) {
-        setFile(droppedFile);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      const validFiles = droppedFiles.filter(validateFile);
+      if (validFiles.length > 0) {
+        setFiles(prev => [...prev, ...validFiles]);
+        setPastedText(""); // Clear pasted text if files are added
       }
     }
   };
 
   const handleChange = (e) => {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      if (validateFile(selectedFile)) {
-        setFile(selectedFile);
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFiles = Array.from(e.target.files);
+      const validFiles = selectedFiles.filter(validateFile);
+      if (validFiles.length > 0) {
+        setFiles(prev => [...prev, ...validFiles]);
+        setPastedText(""); // Clear pasted text if files are added
       }
     }
   };
 
+  const removeFile = (indexToRemove) => {
+    setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleExtract = async () => {
-    if (!file && !pastedText.trim()) return;
+    if (files.length === 0 && !pastedText.trim()) return;
     setLoading(true);
     setError(null);
 
     const formDataUpload = new FormData();
-    if (file) {
-      formDataUpload.append("file", file);
+    if (files.length > 0) {
+      files.forEach(f => formDataUpload.append("files", f));
     } else if (pastedText.trim()) {
       const blob = new Blob([pastedText], { type: 'text/plain' });
-      formDataUpload.append("file", blob, "pasted_text.txt");
+      formDataUpload.append("files", blob, "pasted_text.txt");
     }
 
     try {
@@ -260,6 +268,7 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
             type="file"
             className="hidden"
             accept=".txt,.pdf,.docx"
+            multiple
             onChange={handleChange}
           />
           
@@ -270,18 +279,36 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
           </div>
           
           <h3 className="text-lg font-medium text-white mb-2">
-            {file ? file.name : "Drag and drop your file here"}
+            {files.length > 0 ? `${files.length} file(s) selected` : "Drag and drop your files here"}
           </h3>
           
-          <p className="text-zinc-500 text-sm mb-6">
-            {file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : "Supports .TXT, .PDF, or .DOCX up to 5MB"}
-          </p>
+          <div className="text-zinc-500 text-sm mb-6 flex flex-col items-center gap-2">
+            {files.length > 0 ? (
+              <div className="flex flex-col gap-1 items-center w-full max-w-sm">
+                {files.map((f, i) => (
+                  <div key={i} className="flex items-center justify-between w-full bg-zinc-900/50 px-3 py-1.5 rounded text-xs border border-zinc-800">
+                    <span className="truncate max-w-[200px] text-zinc-300">{f.name}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-zinc-500">{(f.size / (1024 * 1024)).toFixed(2)} MB</span>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); removeFile(i); }}
+                        className="text-red-400 hover:text-red-300"
+                        title="Remove file"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : "Supports .TXT, .PDF, or .DOCX up to 5MB total"}
+          </div>
           
           <button 
             onClick={() => fileInputRef.current?.click()}
             className="px-6 py-2.5 rounded-lg bg-zinc-800 text-white font-medium hover:bg-zinc-700 transition-colors text-sm"
           >
-            {file ? "Choose a different file" : "Browse files"}
+            {files.length > 0 ? "Add more files" : "Browse files"}
           </button>
         </div>
 
@@ -296,8 +323,8 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
             value={pastedText}
             onChange={(e) => {
               setPastedText(e.target.value);
-              if (e.target.value.trim() && file) {
-                setFile(null); // Clear file if user starts typing
+              if (e.target.value.trim() && files.length > 0) {
+                setFiles([]); // Clear files if user starts typing
               }
             }}
             placeholder="Paste your best copy here..."
@@ -308,7 +335,7 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
         <div className="mt-8 flex justify-end">
           <button
             onClick={handleExtract}
-            disabled={(!file && !pastedText.trim()) || loading}
+            disabled={(files.length === 0 && !pastedText.trim()) || loading}
             className="px-6 py-3 rounded-xl bg-[#BFFF00] text-zinc-950 font-semibold hover:bg-[#d4ff4d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-[0_0_15px_rgba(191,255,0,0.15)]"
           >
             {loading ? (
