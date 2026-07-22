@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { SignedIn , SignedOut , UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import Logo from "../Logo";
 
 export default function Header() {
@@ -15,13 +15,13 @@ export default function Header() {
                         <a href="#features" className="hover:text-white transition-colors">Features</a>
                         <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
                     </div>
-                    
+
                     <SignedOut>
                         <Link to="/sign-in" className="text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-                           Log In
+                            Log In
                         </Link>
-                        <Link 
-                            to="/sign-up" 
+                        <Link
+                            to="/sign-up"
                             className="bg-[#BFFF00] text-black px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#d4ff4d] transition-all shadow-[0_0_15px_rgba(191,255,0,0.2)] hover:shadow-[0_0_25px_rgba(191,255,0,0.4)]"
                         >
                             Start Writing
@@ -30,9 +30,9 @@ export default function Header() {
 
                     <SignedIn>
                         <Link to="/dashboard" className="text-sm font-medium text-zinc-300 hover:text-white transition-colors mr-4">
-                           Dashboard
+                            Dashboard
                         </Link>
-                        <UserButton afterSignOutUrl="/"/>
+                        <UserButton afterSignOutUrl="/" />
                     </SignedIn>
                 </nav>
             </div>

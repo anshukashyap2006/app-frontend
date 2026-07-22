@@ -1,7 +1,7 @@
 import React from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useLocation, Link } from "react-router-dom";
-import Logo from "../../../Logo";
+import Logo from "../../Logo";
 
 // Icons as inline SVG components for zero-dependency approach
 const DashboardIcon = () => (
@@ -150,16 +150,16 @@ export function Sidebar({ onNewProject, dashboardState }) {
           </p>
           <NavLink to="/dashboard/voice-profiles" icon={<VoiceIcon />} label="All Voice Profiles" active={isActive("/dashboard/voice-profiles")} />
           <NavLink to="/dashboard/generations" icon={<FileTextIcon />} label="All Generations" active={isActive("/dashboard/generations")} />
-          <NavLink 
-            to="/dashboard/sequences" 
+          <NavLink
+            to="/dashboard/sequences"
             icon={
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </svg>
-            } 
-            label="All Sequences" 
-            active={location.pathname.startsWith("/dashboard/sequences")} 
+            }
+            label="All Sequences"
+            active={location.pathname.startsWith("/dashboard/sequences")}
           />
           <NavLink to="/dashboard/brand-briefs" icon={<BriefcaseIcon />} label="Brand Briefs" active={isActive("/dashboard/brand-briefs")} />
           <NavLink to="/dashboard/social-posts" icon={<ShareIcon />} label="Social Media Posts" active={isActive("/dashboard/social-posts")} />
