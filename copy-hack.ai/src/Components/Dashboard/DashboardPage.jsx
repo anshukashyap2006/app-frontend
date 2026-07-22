@@ -78,7 +78,6 @@ export function DashboardPage({ dashboardState, setBreadcrumbs, onNewProject }) 
         <StatCard
           label="THIS MONTH'S COPIES"
           value={stats.thisMonthCopies}
-          trend="+12%"
         />
       </div>
  
