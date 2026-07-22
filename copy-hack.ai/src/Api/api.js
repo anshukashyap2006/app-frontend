@@ -5,7 +5,7 @@ import axios from "axios";
 
 const apiClient = axios.create(
     {
-        baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000",
+        baseURL: import.meta.env.VITE_API_BASE_URL || "https://new-app-repo-qei1.onrender.com/",
         headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
