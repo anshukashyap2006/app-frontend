@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import apiClient from "../../Api/api";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
 import { EmailResultView } from "./components/EmailResultView";
+import { UpgradeModal } from "./components/UpgradeModal";
 
 const EMAIL_TYPES = [
   { id: "cold_outreach", title: "Cold Outreach", desc: "Pattern-interrupt opener, credibility build, low-friction ask", icon: "user-plus" },
@@ -61,6 +62,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationResult, setGenerationResult] = useState(null);
   const [selectedVersionId, setSelectedVersionId] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     async function fetchProject() {
@@ -91,6 +93,11 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
   const handleGenerate = async () => {
     if (!dashboardState?.voiceProfiles?.length) {
       alert("You need a voice profile to generate an email.");
+      return;
+    }
+    
+    if (!project?.brand_brief) {
+      alert("Please link a brand brief to this project first.");
       return;
     }
 
@@ -128,7 +135,11 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
 
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.detail || "An error occurred during generation.");
+      if (err.response?.status === 403) {
+        setShowUpgradeModal(true);
+      } else {
+        alert(err.response?.data?.detail || "An error occurred during generation.");
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -161,26 +172,50 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
     const displayVersion = versions.find(v => v.id === selectedVersionId) || latestVersion || generationResult;
 
     return (
-      <EmailResultView
-        result={displayVersion}
-        onBack={handleBackToForm}
-        onRegenerate={handleRegenerate}
-        projectName={project?.name}
-        voiceProfileName={defaultVoice?.name}
-        brandBriefName={project?.brand_brief?.name}
-        emailType={emailType}
-        isRegenerating={isGenerating}
-        versions={versions}
-        selectedVersionId={displayVersion?.id}
-        onSelectVersion={setSelectedVersionId}
-      />
+      <>
+        <EmailResultView
+          result={displayVersion}
+          onBack={handleBackToForm}
+          onRegenerate={handleRegenerate}
+          projectName={project?.name}
+          voiceProfileName={defaultVoice?.name}
+          brandBriefName={project?.brand_brief?.name}
+          emailType={emailType}
+          isRegenerating={isGenerating}
+          versions={versions}
+          selectedVersionId={displayVersion?.id}
+          onSelectVersion={setSelectedVersionId}
+        />
+        <UpgradeModal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
+      </>
     );
   }
 
+  const hasVoiceProfiles = dashboardState?.voiceProfiles?.length > 0;
+
   return (
-    <div className="min-h-full bg-zinc-950 px-6 py-8 md:px-10 max-w-4xl">
+    <div className="min-h-full bg-zinc-950 px-6 py-8 md:px-10 max-w-4xl relative">
+      <UpgradeModal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
+      
+      {!hasVoiceProfiles && (
+        <div className="absolute inset-0 z-10 bg-zinc-950/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 rounded-xl">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+            <div className="w-16 h-16 bg-[#BFFF00]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#BFFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Voice Profile Required</h3>
+            <p className="text-zinc-400 mb-6">You need to set up at least one Voice Profile before you can generate copy that sounds like you.</p>
+            <Link to="/dashboard/voice" className="w-full inline-flex items-center justify-center px-4 py-3 bg-[#BFFF00] text-zinc-950 font-bold rounded-xl hover:bg-[#a6e600] transition-colors">
+              Create Voice Profile
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Title & Badges */}
-      <div className="mb-10">
+      <div className={`mb-10 ${!hasVoiceProfiles ? 'opacity-30 pointer-events-none' : ''}`}>
         <h1 className="text-3xl font-bold text-white tracking-tight mb-4">Generate an Email</h1>
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-500/10">
