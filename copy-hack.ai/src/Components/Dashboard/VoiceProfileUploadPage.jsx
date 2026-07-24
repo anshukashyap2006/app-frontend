@@ -305,10 +305,11 @@ export function VoiceProfileUploadPage({ setBreadcrumbs }) {
           </div>
           
           <button 
-            onClick={() => fileInputRef.current?.click()}
-            className="px-6 py-2.5 rounded-lg bg-zinc-800 text-white font-medium hover:bg-zinc-700 transition-colors text-sm"
+            onClick={() => { /* fileInputRef.current?.click() */ }}
+            disabled={true}
+            className="px-6 py-2.5 rounded-lg bg-zinc-800 text-white font-medium transition-colors text-sm opacity-50 cursor-not-allowed"
           >
-            {files.length > 0 ? "Add more files" : "Browse files"}
+            {files.length > 0 ? "Add more files (Soon)" : "Browse files (Soon)"}
           </button>
         </div>
 
