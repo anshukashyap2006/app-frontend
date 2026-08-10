@@ -92,7 +92,7 @@ const ChevronDownIcon = () => (
 // Profile color dots
 const PROFILE_COLORS = ["#BFFF00", "#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#DDA0DD"];
 
-export function Sidebar({ onNewProject, dashboardState }) {
+export function Sidebar({ onNewProject, dashboardState, sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -102,92 +102,124 @@ export function Sidebar({ onNewProject, dashboardState }) {
   const used = dashboardState?.subscription?.generations_used || 0;
   const limit = dashboardState?.subscription?.generations_limit || 0;
 
+  // Close sidebar on mobile when navigating
+  const handleNavClick = () => {
+    if (setSidebarOpen) setSidebarOpen(false);
+  };
+
   return (
-    <aside className="w-[240px] min-w-[240px] h-full bg-zinc-950 border-r border-zinc-800/60 flex flex-col overflow-hidden">
-      {/* Logo */}
-      <div className="px-5 pt-6 pb-5">
-        <Logo className="h-6" textClassName="text-base uppercase tracking-[0.08em]" />
-      </div>
+    <>
+      {/* Backdrop — visible only on mobile when sidebar is open */}
+      <div
+        className={`sidebar-backdrop lg:hidden ${sidebarOpen ? 'open' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
-      {/* Scrollable nav area */}
-      <nav className="flex-1 overflow-y-auto sidebar-scroll px-3">
-        {/* Workspace section */}
-        <div className="mb-5">
-          <p className="px-2 mb-2 text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
-            Workspace
-          </p>
-          <NavLink
-            to="/dashboard"
-            icon={<DashboardIcon />}
-            label="Dashboard"
-            active={isActive("/dashboard")}
-          />
-          <NavLink
-            to="/dashboard/projects"
-            icon={<FolderIcon />}
-            label="Projects"
-            active={isActive("/dashboard/projects")}
-          />
-        </div>
-
-        {/* New Project button */}
-        <div className="px-2 mb-6">
+      <aside className={`
+        sidebar-mobile
+        w-[240px] min-w-[240px] h-full bg-zinc-950 border-r border-zinc-800/60 flex flex-col overflow-hidden
+        fixed inset-y-0 left-0 z-50
+        lg:relative lg:z-auto lg:translate-x-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* Logo + Close button on mobile */}
+        <div className="px-5 pt-6 pb-5 flex items-center justify-between">
+          <Logo className="h-6" textClassName="text-base uppercase tracking-[0.08em]" />
           <button
-            onClick={onNewProject}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#BFFF00] text-zinc-900 text-sm font-semibold hover:bg-[#d4ff4d] active:bg-[#a8e600] transition-all duration-200 shadow-[0_0_20px_rgba(191,255,0,0.15)]"
-            id="sidebar-new-project-btn"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            aria-label="Close sidebar"
           >
-            <PlusIcon />
-            New Project
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
 
-
-        {/* My Library section */}
-        <div className="mb-5">
-          <p className="px-2 mb-2 text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
-            My Library
-          </p>
-          <NavLink to="/dashboard/voice-profiles" icon={<VoiceIcon />} label="All Voice Profiles" active={isActive("/dashboard/voice-profiles")} />
-          <NavLink to="/dashboard/generations" icon={<FileTextIcon />} label="All Generations" active={isActive("/dashboard/generations")} />
-          <NavLink
-            to="/dashboard/sequences"
-            icon={
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-              </svg>
-            }
-            label="All Sequences"
-            active={location.pathname.startsWith("/dashboard/sequences")}
-          />
-          <NavLink to="/dashboard/brand-briefs" icon={<BriefcaseIcon />} label="Brand Briefs" active={isActive("/dashboard/brand-briefs")} />
-          <NavLink to="/dashboard/social-posts" icon={<ShareIcon />} label="Social Media Posts" active={isActive("/dashboard/social-posts")} />
-          <NavLink to="/dashboard/emails" icon={<MailIcon />} label="Emails" active={isActive("/dashboard/emails")} />
-        </div>
-      </nav>
-
-      {/* Bottom section */}
-      <div className="border-t border-zinc-800/60 px-3 pt-3 pb-2">
-        <NavLink to="/dashboard/settings" icon={<SettingsIcon />} label="Settings" active={isActive("/dashboard/settings")} />
-        <NavLink to="/dashboard/help" icon={<HelpIcon />} label="Help & Support" active={isActive("/dashboard/help")} />
-      </div>
-
-      {/* Plan badge */}
-      <div className="px-4 pb-5 pt-2">
-        <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-lg px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-xs font-semibold capitalize">{planName} Plan</span>
+        {/* Scrollable nav area */}
+        <nav className="flex-1 overflow-y-auto sidebar-scroll px-3">
+          {/* Workspace section */}
+          <div className="mb-5">
+            <p className="px-2 mb-2 text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
+              Workspace
+            </p>
+            <NavLink
+              to="/dashboard"
+              icon={<DashboardIcon />}
+              label="Dashboard"
+              active={isActive("/dashboard")}
+              onClick={handleNavClick}
+            />
+            <NavLink
+              to="/dashboard/projects"
+              icon={<FolderIcon />}
+              label="Projects"
+              active={isActive("/dashboard/projects")}
+              onClick={handleNavClick}
+            />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Generations</span>
-            <span className="text-[#BFFF00] font-mono text-sm font-bold bg-[#BFFF00]/10 px-2 py-0.5 rounded-md">
-              {used}<span className="text-zinc-500 text-xs font-medium">/{limit}</span>
-            </span>
+
+          {/* New Project button */}
+          <div className="px-2 mb-6">
+            <button
+              onClick={() => { onNewProject(); handleNavClick(); }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#BFFF00] text-zinc-900 text-sm font-semibold hover:bg-[#d4ff4d] active:bg-[#a8e600] transition-all duration-200 shadow-[0_0_20px_rgba(191,255,0,0.15)]"
+              id="sidebar-new-project-btn"
+            >
+              <PlusIcon />
+              New Project
+            </button>
+          </div>
+
+
+          {/* My Library section */}
+          <div className="mb-5">
+            <p className="px-2 mb-2 text-[10px] font-mono font-semibold tracking-[0.18em] text-zinc-600 uppercase">
+              My Library
+            </p>
+            <NavLink to="/dashboard/voice-profiles" icon={<VoiceIcon />} label="All Voice Profiles" active={isActive("/dashboard/voice-profiles")} onClick={handleNavClick} />
+            <NavLink to="/dashboard/generations" icon={<FileTextIcon />} label="All Generations" active={isActive("/dashboard/generations")} onClick={handleNavClick} />
+            <NavLink
+              to="/dashboard/sequences"
+              icon={
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+              }
+              label="All Sequences"
+              active={location.pathname.startsWith("/dashboard/sequences")}
+              onClick={handleNavClick}
+            />
+            <NavLink to="/dashboard/brand-briefs" icon={<BriefcaseIcon />} label="Brand Briefs" active={isActive("/dashboard/brand-briefs")} onClick={handleNavClick} />
+            <NavLink to="/dashboard/social-posts" icon={<ShareIcon />} label="Social Media Posts" active={isActive("/dashboard/social-posts")} onClick={handleNavClick} />
+            <NavLink to="/dashboard/emails" icon={<MailIcon />} label="Emails" active={isActive("/dashboard/emails")} onClick={handleNavClick} />
+          </div>
+        </nav>
+
+        {/* Bottom section */}
+        <div className="border-t border-zinc-800/60 px-3 pt-3 pb-2">
+          <NavLink to="/dashboard/settings" icon={<SettingsIcon />} label="Settings" active={isActive("/dashboard/settings")} onClick={handleNavClick} />
+          <NavLink to="/dashboard/help" icon={<HelpIcon />} label="Help & Support" active={isActive("/dashboard/help")} onClick={handleNavClick} />
+        </div>
+
+        {/* Plan badge */}
+        <div className="px-4 pb-5 pt-2">
+          <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-lg px-4 py-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-white text-xs font-semibold capitalize">{planName} Plan</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Generations</span>
+              <span className="text-[#BFFF00] font-mono text-sm font-bold bg-[#BFFF00]/10 px-2 py-0.5 rounded-md">
+                {used}<span className="text-zinc-500 text-xs font-medium">/{limit}</span>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
 
@@ -195,10 +227,11 @@ export function Sidebar({ onNewProject, dashboardState }) {
 /* Sub-components                                                     */
 /* ------------------------------------------------------------------ */
 
-function NavLink({ to, icon, label, active = false, badge = null }) {
+function NavLink({ to, icon, label, active = false, badge = null, onClick }) {
   return (
     <Link
       to={to}
+      onClick={onClick}
       className={`
         flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm transition-all duration-150
         ${active
@@ -229,3 +262,4 @@ function SidebarProfileItem({ name, color }) {
     </button>
   );
 }
+

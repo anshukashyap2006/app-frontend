@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function PricingSection() {
     return (
-        <section className="py-24 px-4 relative border-t border-white/5" id="pricing">
+        <section className="py-16 md:py-24 px-4 relative border-t border-white/5" id="pricing">
             {/* Subtle background glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#BFFF00]/5 blur-[120px] rounded-[100%] pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[800px] h-[300px] md:h-[500px] bg-[#BFFF00]/5 blur-[120px] rounded-[100%] pointer-events-none"></div>
 
             <div className="max-w-6xl mx-auto relative z-10">
-                <div className="text-center mb-16">
+                <div className="text-center mb-10 md:mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                         Simple pricing. No seat fees.<br />
                         No surprise bills.

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 
-export function TopBar({ breadcrumbs }) {
+export function TopBar({ breadcrumbs, setSidebarOpen }) {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
@@ -29,22 +29,38 @@ export function TopBar({ breadcrumbs }) {
   };
 
   return (
-    <header className="h-[60px] min-h-[60px] flex items-center justify-between px-6 md:px-10 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-sm">
-      {/* Page title / Breadcrumbs */}
-      <div className="flex items-center gap-2 text-base font-semibold tracking-tight">
+    <header className="h-[56px] lg:h-[60px] min-h-[56px] lg:min-h-[60px] flex items-center justify-between px-4 md:px-6 lg:px-10 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-sm">
+      {/* Left side: hamburger + breadcrumbs */}
+      <div className="flex items-center gap-3 text-base font-semibold tracking-tight min-w-0">
+        {/* Hamburger menu — visible only below lg */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden p-1.5 -ml-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors shrink-0"
+          aria-label="Open sidebar"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+
+        {/* Page title / Breadcrumbs */}
         {breadcrumbs ? (
-          breadcrumbs.map((crumb, idx) => (
-            <React.Fragment key={idx}>
-              {idx > 0 && <span className="text-zinc-600">/</span>}
-              {crumb.href ? (
-                <Link to={crumb.href} className="text-zinc-500 hover:text-zinc-300 transition-colors">
-                  {crumb.label}
-                </Link>
-              ) : (
-                <span className="text-white">{crumb.label}</span>
-              )}
-            </React.Fragment>
-          ))
+          <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+            {breadcrumbs.map((crumb, idx) => (
+              <React.Fragment key={idx}>
+                {idx > 0 && <span className="text-zinc-600 shrink-0">/</span>}
+                {crumb.href ? (
+                  <Link to={crumb.href} className="text-zinc-500 hover:text-zinc-300 transition-colors truncate hidden sm:inline">
+                    {crumb.label}
+                  </Link>
+                ) : (
+                  <span className="text-white truncate">{crumb.label}</span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         ) : (
           <h2 className="text-white">Dashboard</h2>
         )}

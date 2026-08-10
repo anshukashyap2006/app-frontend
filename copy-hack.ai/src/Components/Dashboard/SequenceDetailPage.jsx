@@ -161,13 +161,13 @@ export function SequenceDetailPage({ setBreadcrumbs }) {
           <div className="text-xs text-zinc-500">in this sequence</div>
         </div>
 
-        <div className="px-4 border-r border-zinc-800/60 flex flex-col justify-center">
+        <div className="px-4 border-r border-zinc-800/60 md:border-r flex flex-col justify-center">
           <div className="text-[10px] font-mono text-zinc-500 tracking-widest uppercase mb-1">Sequence Type</div>
           <div className="text-xl font-bold text-white mb-0.5 capitalize">{sequence.sequence_type}</div>
           <div className="text-xs text-zinc-500 capitalize">{sequence.audience_awareness} audience</div>
         </div>
 
-        <div className="px-4 border-r border-zinc-800/60 flex flex-col justify-center">
+        <div className="px-4 md:border-r border-zinc-800/60 flex flex-col justify-center">
           <div className="text-[10px] font-mono text-zinc-500 tracking-widest uppercase mb-1">Duration</div>
           <div className="text-xl font-bold text-white mb-0.5">{durationDays} days</div>
           <div className="text-xs text-zinc-500">day 0 → day {durationDays}</div>
@@ -237,7 +237,7 @@ export function SequenceDetailPage({ setBreadcrumbs }) {
       </div>
 
       {/* Bottom bar */}
-      <div className="mt-8 flex items-center justify-between border-t border-zinc-800/60 pt-6">
+      <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-zinc-800/60 pt-6">
         <div className="flex items-center gap-3">
           <svg className="w-5 h-5 text-[#BFFF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>

@@ -29,9 +29,9 @@ const faqs = [
 
 export default function FAQSection() {
     return (
-        <section className="py-24 px-4 relative border-t border-white/5 bg-gray-950">
+        <section className="py-16 md:py-24 px-4 relative border-t border-white/5 bg-gray-950">
             <div className="max-w-4xl mx-auto relative z-10">
-                <div className="text-center mb-16">
+                <div className="text-center mb-10 md:mb-16">
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
                         Why CopyCraft and not just ChatGPT?
                     </h2>
@@ -40,7 +40,7 @@ export default function FAQSection() {
                 <div className="space-y-6">
                     {faqs.map((faq, idx) => (
                         <div key={idx} className="bg-[#18181B]/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-[#18181B]/80 transition-colors">
-                            <h3 className="text-xl font-bold text-white mb-4 flex gap-4">
+                            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex gap-3 md:gap-4">
                                 <span className="text-[#BFFF00]">Q:</span>
                                 {faq.q}
                             </h3>

@@ -184,6 +184,36 @@ svg {
 }
 
 /* ================================================================
+   Mobile sidebar overlay & backdrop
+   ================================================================ */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-mobile {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ================================================================
+   Responsive base — prevent horizontal overflow
+   ================================================================ */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ================================================================
    Light Theme (Invert Trick)
    ================================================================ */
 .light-theme {

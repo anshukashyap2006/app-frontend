@@ -2,17 +2,17 @@ import React from "react";
 
 export default function ComparisonSection() {
     return (
-        <section className="py-24 px-4 relative border-t border-white/5 bg-gray-950">
+        <section className="py-16 md:py-24 px-4 relative border-t border-white/5 bg-gray-950">
             <div className="max-w-5xl mx-auto flex flex-col items-center relative z-10">
 
                 <h2 className="text-3xl md:text-5xl font-bold text-white text-center mb-4">
                     AI copy is recognisable in 3 seconds.
                 </h2>
-                <p className="text-xl text-zinc-500 mb-16 text-center">
+                <p className="text-lg md:text-xl text-zinc-500 mb-10 md:mb-16 text-center">
                     "In today's fast-paced digital landscape…" <span className="text-red-500/80">(Gross.)</span>
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-6 w-full mb-16">
+                <div className="grid md:grid-cols-2 gap-6 w-full mb-10 md:mb-16">
                     {/* Left Card: Generic AI */}
                     <div className="bg-[#120a0a]/80 backdrop-blur-md border border-red-900/50 rounded-2xl p-8 flex flex-col shadow-xl">
                         <div className="flex justify-end mb-4">

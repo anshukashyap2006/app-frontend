@@ -232,29 +232,29 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       </div>
 
       {/* Progress Steps (Visual only) */}
-      <div className="flex items-center justify-between bg-zinc-900/50 border border-zinc-800/60 rounded-xl px-8 py-5 mb-10">
+      <div className="flex items-center justify-between bg-zinc-900/50 border border-zinc-800/60 rounded-xl px-4 sm:px-8 py-4 sm:py-5 mb-10 overflow-x-auto">
         <div className="flex items-center gap-3 flex-1">
           <div className="w-6 h-6 rounded-full bg-[#BFFF00] flex items-center justify-center text-zinc-950 shrink-0">
             <CheckIcon className="w-3.5 h-3.5" />
           </div>
-          <span className="text-[#BFFF00] text-xs font-semibold uppercase tracking-widest">Type</span>
+          <span className="text-[#BFFF00] text-xs font-semibold uppercase tracking-widest hidden sm:inline">Type</span>
         </div>
         <div className="flex-1 h-px bg-zinc-800"></div>
         <div className="flex items-center gap-3 flex-1 justify-center">
           <div className="w-6 h-6 rounded-full border border-zinc-700 text-zinc-500 flex items-center justify-center text-xs font-medium shrink-0">2</div>
-          <span className="text-zinc-500 text-xs font-medium uppercase tracking-widest">Goal & CTA</span>
+          <span className="text-zinc-500 text-xs font-medium uppercase tracking-widest hidden sm:inline">Goal & CTA</span>
         </div>
         <div className="flex-1 h-px bg-zinc-800"></div>
         <div className="flex items-center gap-3 flex-1 justify-center">
           <div className="w-6 h-6 rounded-full bg-[#BFFF00] flex items-center justify-center text-zinc-950 shrink-0">
             <CheckIcon className="w-3.5 h-3.5" />
           </div>
-          <span className="text-[#BFFF00] text-xs font-semibold uppercase tracking-widest">Settings</span>
+          <span className="text-[#BFFF00] text-xs font-semibold uppercase tracking-widest hidden sm:inline">Settings</span>
         </div>
         <div className="flex-1 h-px bg-zinc-800"></div>
         <div className="flex items-center gap-3 flex-1 justify-end">
           <div className="w-6 h-6 rounded-full border border-zinc-700 text-zinc-500 flex items-center justify-center text-xs font-medium shrink-0">4</div>
-          <span className="text-zinc-500 text-xs font-medium uppercase tracking-widest">Generate</span>
+          <span className="text-zinc-500 text-xs font-medium uppercase tracking-widest hidden sm:inline">Generate</span>
         </div>
       </div>
 
@@ -351,7 +351,7 @@ export function GenerateEmailPage({ dashboardState, setBreadcrumbs }) {
       <div className="mb-10">
         <h2 className="text-lg font-bold text-white tracking-tight mb-1">Copywriting Framework</h2>
         <p className="text-sm text-zinc-500 mb-4">Leave on Auto to let the AI pick the best fit.</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {FRAMEWORKS.map((fw) => (
             <div
               key={fw.id}

@@ -24,6 +24,7 @@ import { useDashboard } from "./hooks/useDashboard";
 export default function Dashboard() {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
   const [breadcrumbs, setBreadcrumbs] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const dashboard = useDashboard();
 
   const handleNewProject = useCallback(() => {
@@ -44,11 +45,11 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-zinc-950 overflow-hidden">
       {/* Sidebar */}
-      <Sidebar onNewProject={handleNewProject} dashboardState={dashboard} />
+      <Sidebar onNewProject={handleNewProject} dashboardState={dashboard} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <TopBar breadcrumbs={breadcrumbs} />
+        <TopBar breadcrumbs={breadcrumbs} setSidebarOpen={setSidebarOpen} />
         <main className="flex-1 overflow-y-auto">
           <Routes>
             <Route index element={<DashboardPage dashboardState={dashboard} setBreadcrumbs={setBreadcrumbs} onNewProject={handleNewProject} />} />

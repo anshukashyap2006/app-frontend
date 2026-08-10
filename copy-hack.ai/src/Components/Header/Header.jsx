@@ -6,7 +6,7 @@ import Logo from "../Logo";
 export default function Header() {
     return (
         <header className="sticky z-50 top-0 backdrop-blur-md bg-[#09090b]/80 border-b border-white/5">
-            <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
                 <Logo className="h-8" />
 
                 <nav className="flex items-center gap-6">
@@ -22,7 +22,7 @@ export default function Header() {
                         </Link>
                         <Link
                             to="/sign-up"
-                            className="bg-[#BFFF00] text-black px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#d4ff4d] transition-all shadow-[0_0_15px_rgba(191,255,0,0.2)] hover:shadow-[0_0_25px_rgba(191,255,0,0.4)]"
+                            className="bg-[#BFFF00] text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold hover:bg-[#d4ff4d] transition-all shadow-[0_0_15px_rgba(191,255,0,0.2)] hover:shadow-[0_0_25px_rgba(191,255,0,0.4)]"
                         >
                             Start Writing
                         </Link>

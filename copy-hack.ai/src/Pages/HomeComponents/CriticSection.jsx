@@ -2,11 +2,11 @@ import React from "react";
 
 export default function CriticSection() {
     return (
-        <section className="py-24 px-4 relative border-t border-white/5 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,#162d0a_0%,#0a1208_100%)] border border-[#1e3a12] rounded-2xl" id="how-it-works">
+        <section className="py-16 md:py-24 px-4 relative border-t border-white/5 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,#162d0a_0%,#0a1208_100%)] border border-[#1e3a12] rounded-2xl" id="how-it-works">
             <div className="max-w-6xl mx-auto flex flex-col items-center relative z-10">
 
                 {/* Critic Simulation Mockup */}
-                <div className="w-full max-w-4xl bg-[#18181B]/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-2xl mb-16 ring-1 ring-white/5">
+                <div className="w-full max-w-4xl bg-[#18181B]/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-2xl mb-10 md:mb-16 ring-1 ring-white/5">
                     {/* Fake window header */}
                     <div className="flex items-center gap-2 px-4 py-3 bg-[#09090b]/50 border-b border-white/10">
                         <div className="w-3 h-3 rounded-full bg-[#BFFF00]"></div>
@@ -15,7 +15,7 @@ export default function CriticSection() {
                     {/* Mockup content */}
                     <div className="grid md:grid-cols-2 gap-px bg-zinc-800">
                         {/* Left Side: Draft */}
-                        <div className="bg-zinc-900 p-6">
+                        <div className="bg-zinc-900 p-4 md:p-6">
                             <div className="flex justify-between items-center mb-6">
                                 <span className="text-xs font-mono text-zinc-500">GENERATED DRAFT</span>
                                 <span className="text-xs text-red-400 flex items-center gap-1">
@@ -23,7 +23,7 @@ export default function CriticSection() {
                                     5 issues flagged
                                 </span>
                             </div>
-                            <div className="font-serif text-lg text-zinc-300 leading-relaxed space-y-4">
+                            <div className="font-serif text-base md:text-lg text-zinc-300 leading-relaxed space-y-4">
                                 <p>
                                     In today's <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-1 rounded">fast-paced digital landscape</span>, our <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-1 rounded">revolutionary</span> platform helps you leverage <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-1 rounded">best-in-class</span> AI solutions to <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-1 rounded">supercharge</span> your content creation workflow and drive <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-1 rounded">synergistic growth</span>.
                                 </p>
@@ -41,7 +41,7 @@ export default function CriticSection() {
                         </div>
 
                         {/* Right Side: Scores & Notes */}
-                        <div className="bg-zinc-900 p-6 flex flex-col justify-between">
+                        <div className="bg-zinc-900 p-4 md:p-6 flex flex-col justify-between">
                             <div>
                                 <span className="text-xs font-mono text-zinc-500 mb-6 block">CRITIC SCORES</span>
                                 <div className="space-y-6">

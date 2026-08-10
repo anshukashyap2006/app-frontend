@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function HeroSection() {
     return (
-        <section className="relative flex flex-col items-center justify-center pt-24 pb-32 px-4 text-center overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,#1c3d0a_0%,#080d08_60%,#060908_100%)] min-h-screen">
+        <section className="relative flex flex-col items-center justify-center pt-16 pb-20 md:pt-24 md:pb-32 px-4 text-center overflow-hidden bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,#1c3d0a_0%,#080d08_60%,#060908_100%)] min-h-[80vh] md:min-h-screen">
             {/* Strong greenish background effect from the bottom */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#BFFF00]/20 via-[#BFFF00]/5 to-transparent blur-[80px] pointer-events-none"></div>
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[200px] md:h-[400px] bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#BFFF00]/20 via-[#BFFF00]/5 to-transparent blur-[80px] pointer-events-none"></div>
 
             <div className="z-10 max-w-4xl mx-auto flex flex-col items-center">
-                <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#BFFF00] bg-[#BFFF00]/10 backdrop-blur-sm text-sm font-mono font-bold text-[#BFFF00] mb-8 shadow-[0_0_15px_rgba(191,255,0,0.2)]">
+                <div className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full border border-[#BFFF00] bg-[#BFFF00]/10 backdrop-blur-sm text-xs sm:text-sm font-mono font-bold text-[#BFFF00] mb-6 sm:mb-8 shadow-[0_0_15px_rgba(191,255,0,0.2)]">
                     <span className="w-2 h-2 rounded-full bg-[#BFFF00] animate-pulse shadow-[0_0_8px_#BFFF00]"></span>
                     Stop sounding like a robot wrote it.
                 </div>
@@ -20,7 +20,7 @@ export default function HeroSection() {
                     </span>
                 </h1>
 
-                <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-10 leading-relaxed font-medium">
+                <p className="text-base md:text-xl text-zinc-400 max-w-2xl mb-8 md:mb-10 leading-relaxed font-medium">
                     Generate emails and social media posts that sound exactly like you, with a built-in Critic that flags weak copy before you ever read it.
                 </p>
 
